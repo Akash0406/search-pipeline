@@ -163,7 +163,14 @@ importers:
         specifier: 2.16.1
         version: 2.16.1
 
-  packages/shared: {}
+  packages/shared:
+    dependencies:
+      '@careerstack/connectors':
+        specifier: workspace:*
+        version: link:../connectors
+      '@careerstack/security':
+        specifier: workspace:*
+        version: link:../security
 
   packages/testing:
     dependencies:

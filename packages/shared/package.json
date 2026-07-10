@@ -16,5 +16,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@careerstack/connectors": "workspace:*",
+    "@careerstack/security": "workspace:*"
   }
 }

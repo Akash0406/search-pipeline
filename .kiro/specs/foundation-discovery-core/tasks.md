@@ -107,12 +107,12 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - Migrations apply cleanly on a fresh DB; audit_logs reject UPDATE/DELETE via app role; unique constraints enforce fetch/exact-identity idempotency
     - _Requirements: 9.4, 32.1, 36.1_
 
-- [ ] 3. Slice 2 — Contracts package (Zod + OpenAPI)
-  - [~] 3.1 Define shared request/response schemas
+- [x] 3. Slice 2 — Contracts package (Zod + OpenAPI)
+  - [x] 3.1 Define shared request/response schemas
     - Zod schemas for auth, role-profile, connection, opportunity list/detail, save/dismiss, admin, and privacy DTOs; standard error envelope; cursor pagination envelope; emit OpenAPI
     - _Requirements: 33.1_
     - _Design: API §7 (contracts as single source of truth)_
-  - [~] 3.2 Implement pure explorer filter/sort schema + `encodeExplorerState`/`decodeExplorerState`
+  - [x] 3.2 Implement pure explorer filter/sort schema + `encodeExplorerState`/`decodeExplorerState`
     - Filter dimensions and sort keys per design; encode only filter/sort params, never private state
     - _Requirements: 41.1, 41.2, 41.3, 41.4, 42.1, 44.1, 44.3_
     - _Design: API §7 (filter/sort), Frontend §8 (URL state)_

@@ -47,29 +47,29 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
 
 ## Tasks
 
-- [ ] 1. Slice 0 — Monorepo, tooling, config, observability, and infra foundation
-  - [-] 1.1 Initialize pnpm workspace + Turborepo with TypeScript `strict`
+- [x] 1. Slice 0 — Monorepo, tooling, config, observability, and infra foundation
+  - [x] 1.1 Initialize pnpm workspace + Turborepo with TypeScript `strict`
     - Create root `package.json`, `pnpm-workspace.yaml`, `turbo.json`, base `tsconfig` and lint/format configs
     - Scaffold empty `apps/web`, `apps/api`, `apps/worker` and `packages/{ui,database,contracts,auth,config,observability,connectors,security,testing,shared}`
     - Enforce the boundary rule: `packages/shared` and `packages/connectors` must not import NestJS/Fastify/Next/Drizzle/ioredis (add lint rule)
     - _Requirements: 20.1_
     - _Design: Architecture → Monorepo layout, Boundary rule_
-  - [~] 1.2 Implement `packages/config` typed loader
+  - [x] 1.2 Implement `packages/config` typed loader
     - Load `brandName`, raw-source retention days, per-domain rate limits, fetch bounds, OAuth/magic-link settings from env with a typed schema
     - Provide a defined default for `brandName` and emit a config warning when unset
     - _Requirements: 1.1, 1.3, 53.1, 27.1, 31.3, 31.4, 31.5_
   - [ ]* 1.3 Write unit tests for the config loader
     - Assert `brandName` fallback + warning when unset; typed parsing/validation of bounds
     - _Requirements: 1.3_
-  - [~] 1.4 Implement `packages/observability`
+  - [x] 1.4 Implement `packages/observability`
     - Structured logger, trace/metrics hooks, and a `correlationId` propagation utility used across API and worker
     - _Requirements: 24.1_
     - _Design: Architecture (trace/correlation propagation)_
-  - [~] 1.5 Author `infra/` Docker Compose + migration runner
+  - [x] 1.5 Author `infra/` Docker Compose + migration runner
     - `docker-compose` for PostgreSQL + pgvector, Redis, and MinIO (S3-compatible); `.env.example`; a migrations runner script
     - _Requirements: 32.1_
     - _Design: Architecture (infrastructure)_
-  - [~] 1.6 Scaffold `packages/testing`
+  - [x] 1.6 Scaffold `packages/testing`
     - fast-check arbitrary factories, fixture loader, and a shared test harness/config (100-run default for property tests)
     - _Requirements: 20.1_
     - _Design: packages/testing_

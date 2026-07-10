@@ -74,32 +74,32 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - _Requirements: 20.1_
     - _Design: packages/testing_
 
-- [ ] 2. Slice 1 — Database package: Drizzle schema and migrations
-  - [~] 2.1 Set up `packages/database`
+- [x] 2. Slice 1 — Database package: Drizzle schema and migrations
+  - [x] 2.1 Set up `packages/database`
     - Drizzle client/config, migration tooling, and Postgres enum types (`source_type` lowercase, `extraction_method` uppercase, `opportunity_status`)
     - _Requirements: 33.1_
     - _Design: Data Models (conventions, enums)_
-  - [~] 2.2 Implement identity/session/audit schema
+  - [x] 2.2 Implement identity/session/audit schema
     - `users`, `accounts` (no password column), `magic_link_tokens` (hash+expiry+used_at), `sessions`, `user_preferences`, `audit_logs` (INSERT-only, no update/delete grant)
     - _Requirements: 4.4, 4.5, 5.4, 6.1, 8.1, 9.4, 28.1_
     - _Design: Data Models → Identity, Sessions, Preferences, Audit_
-  - [~] 2.3 Implement role-profile schema
+  - [x] 2.3 Implement role-profile schema
     - `role_profiles`, `role_profile_titles`, `role_profile_skills`, `role_profile_locations`, `role_profile_preferences` with `user_id` ownership indexes
     - _Requirements: 10.1, 11.3, 12.3, 13.3, 14.3, 15.2, 16.1_
     - _Design: Data Models → Role Profiles_
-  - [~] 2.4 Implement connector/ingestion schema
+  - [x] 2.4 Implement connector/ingestion schema
     - `connectors`, `connector_configs`, `connections`, `connector_runs`, `connector_checkpoints`, `raw_artifacts` (unique `(connection_id, source_url, content_hash)`), `parser_definitions`, `parser_runs`
     - _Requirements: 24.1, 26.1, 32.2, 35.3, 48.1_
     - _Design: Data Models → Connectors/Runs/Checkpoints, Raw Artifacts & Parsers_
-  - [~] 2.5 Implement canonical opportunity + provenance schema
+  - [x] 2.5 Implement canonical opportunity + provenance schema
     - `opportunities` (reserved `match_features`/`embedding` never written; explorer indexes), `opportunity_locations`, `opportunity_requirements`, `opportunity_skills`, `opportunity_content`, `opportunity_sources` (unique `(source_type, external_id)`), `opportunity_evidence`, `content_revisions`, `duplicate_groups`
     - _Requirements: 32.1, 33.2, 33.3, 34.1, 36.1, 37.1, 39.2, 58.3_
     - _Design: Data Models → Canonical Opportunity Model & Provenance, Indexing strategy_
-  - [~] 2.6 Implement per-user state, review, exports, outbox, flags schema
+  - [x] 2.6 Implement per-user state, review, exports, outbox, flags schema
     - `opportunity_user_state` (PK `(user_id, opportunity_id)`), `review_queue_items`, `exports`, `outbox_events`, `feature_flags`
     - _Requirements: 35.1, 43.4, 49.1_
     - _Design: Data Models → Per-User State, Review Queue, Exports, Outbox, Flags_
-  - [~] 2.7 Generate initial migration + ownership-scoped repository base
+  - [x] 2.7 Generate initial migration + ownership-scoped repository base
     - Emit the first migration; implement a repository base whose every user-scoped query requires an `ownerId` and adds `WHERE user_id = :ownerId`
     - _Requirements: 54.1, 54.2, 54.3_
     - _Design: Auth §6 (ownership at repository layer)_

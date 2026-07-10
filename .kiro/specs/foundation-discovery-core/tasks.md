@@ -124,25 +124,25 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - _Requirements: 44.1, 44.2, 44.3_
     - _Properties: P22_
 
-- [ ] 4. Slice 3 — Auth package + AuthModule (OAuth+PKCE, magic link, sessions, admin, audit)
-  - [~] 4.1 Implement framework-agnostic auth core (`packages/auth`)
+- [x] 4. Slice 3 — Auth package + AuthModule (OAuth+PKCE, magic link, sessions, admin, audit)
+  - [x] 4.1 Implement framework-agnostic auth core (`packages/auth`)
     - Session issue/rotate/revoke, token hashing, CSRF double-submit, PKCE + signed single-use state, magic-link token generation/verification
     - _Requirements: 4.1, 5.1, 6.2, 8.1_
     - _Design: Auth §6_
-  - [~] 4.2 Implement Google OAuth flow in AuthModule
+  - [x] 4.2 Implement Google OAuth flow in AuthModule
     - `POST /auth/oauth/google/start` (state+PKCE, minimum scopes) and `GET /auth/oauth/google/callback` (validate state, exchange code, create/bind account, issue session)
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 52.1, 52.2_
     - _Design: API §7 (Auth routes)_
-  - [~] 4.3 Implement magic-link endpoints
+  - [x] 4.3 Implement magic-link endpoints
     - `POST /auth/magic-link` (single-use, hashed, ≤15 min) and `GET /auth/magic-link/verify` (consume, reject expired/used with resend offer); no password auth path exists
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
-  - [~] 4.4 Implement session endpoints + logout
+  - [x] 4.4 Implement session endpoints + logout
     - `GET /me/sessions`, `DELETE /me/sessions/{id}`, `DELETE /me/sessions?others=true`, `POST /auth/logout`; timezone-aware timestamps
     - _Requirements: 6.1, 6.2, 6.3, 6.4_
-  - [~] 4.5 Implement admin guard, ownership guard, and auth auditing
+  - [x] 4.5 Implement admin guard, ownership guard, and auth auditing
     - Admin role guard (403 for non-admins), controller-level ownership guard complementing the repository check, append-only audit writes for sign-in/session/admin-access events
     - _Requirements: 8.2, 8.3, 8.4, 9.1, 9.2, 9.4, 54.1, 54.2_
-  - [~] 4.6 Implement account deletion
+  - [x] 4.6 Implement account deletion
     - `POST /privacy/delete-account`: explicit confirmation, delete/anonymize personal data + profiles + states + connections, invalidate all sessions, write audit event
     - _Requirements: 7.1, 7.2, 7.3, 7.4_
   - [ ]* 4.7 Write property test for password/magic-link invariant

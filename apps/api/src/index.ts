@@ -1,7 +1,11 @@
 /**
  * `@careerstack/api` — NestJS + Fastify HTTP API (`/api/v1`).
  *
- * The Nest application is set up in a later task; this placeholder keeps the app
- * a valid, type-checkable member of the workspace.
+ * The runnable entrypoint is `main.ts` (`node dist/main.js`). This barrel
+ * re-exports the app module and the API prefix for tooling/tests without
+ * triggering server startup.
  */
 export const API_APP = '@careerstack/api' as const;
+
+export { AppModule } from './app.module.js';
+export { API_PREFIX } from './common/constants.js';

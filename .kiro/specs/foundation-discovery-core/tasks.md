@@ -164,7 +164,7 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Slice 4 — Role Profiles module + UI
-  - [-] 6.1 Implement RoleProfilesModule
+  - [x] 6.1 Implement RoleProfilesModule
     - CRUD + `activate`/`pause`/`resume`/`duplicate`; enforce one-active via `user_preferences.active_role_profile_id`; first profile auto-activates; ownership enforced
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 11.1, 11.2, 12.1, 12.2, 13.1, 13.2, 14.1, 14.2, 15.1, 15.3, 16.1, 16.3, 16.4, 17.1, 17.2, 17.3, 18.1, 18.2, 18.3, 19.1, 19.4_
     - _Design: API §7 (role-profile routes), Auth §6 (ownership)_
@@ -187,24 +187,24 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - Salary unspecified ≠ 0; work-rights optional/private; no work-rights inference from nationality/location
     - _Requirements: 15.3, 16.3, 16.4, 16.5_
 
-- [ ] 7. Slice 5 — Security package (canonical URL, SSRF guard, SafeFetcher, rate limiter, sanitizer)
-  - [-] 7.1 Implement canonical URL normalizer (pure)
+- [x] 7. Slice 5 — Security package (canonical URL, SSRF guard, SafeFetcher, rate limiter, sanitizer)
+  - [x] 7.1 Implement canonical URL normalizer (pure)
     - Strip tracking params, normalize scheme/host casing, resolve to a stable first-party URL; used as an identity key
     - _Requirements: 36.1_
     - _Design: Normalization §3 (canonical URL resolution)_
-  - [-] 7.2 Implement SSRF guard (pure resolver policy)
+  - [x] 7.2 Implement SSRF guard (pure resolver policy)
     - DNS resolution + IP blocklist (private/loopback/link-local/unique-local/reserved/multicast/metadata), IP pinning against rebinding, redirect-target re-validation hook
     - _Requirements: 30.1, 30.2, 30.3_
     - _Design: Security §2 (SSRF guard)_
-  - [-] 7.3 Implement SafeFetcher
+  - [x] 7.3 Implement SafeFetcher
     - Domain deny/allow policy (deny beats allow), robots handling, descriptive User-Agent, conditional headers, timeout, redirect cap with per-hop SSRF re-check, content-type validation, streamed max-bytes cap
     - _Requirements: 31.1, 31.2, 31.3, 31.4, 31.5, 31.6, 31.7, 26.3, 28.2, 28.3, 28.4_
     - _Design: Security §2 (enforcement pipeline)_
-  - [-] 7.4 Implement per-domain rate limiter + backoff
+  - [x] 7.4 Implement per-domain rate limiter + backoff
     - Redis token-bucket keyed by registrable domain shared across connections; over-budget requests deferred; exponential backoff with jitter on throttle/5xx
     - _Requirements: 27.1, 27.2, 27.3_
     - _Design: Security §2 (rate limiting), Worker §9_
-  - [ ] 7.5 Implement HTML sanitizer
+  - [x] 7.5 Implement HTML sanitizer
     - Sanitize opportunity description HTML; never render raw markup (XSS defense)
     - _Requirements: 33.4_
     - _Design: Data Models (opportunity_content sanitized), Frontend §8_
@@ -232,25 +232,25 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - Known XSS vectors (script/onerror/js: URLs) are stripped from description HTML
     - _Requirements: 33.4_
 
-- [ ] 8. Slice 6 — Connector framework + Greenhouse/Lever/Ashby/JSON-LD/manual-URL connectors
-  - [~] 8.1 Define `OpportunityConnector` interface + registry (`packages/connectors`)
+- [x] 8. Slice 6 — Connector framework + Greenhouse/Lever/Ashby/JSON-LD/manual-URL connectors
+  - [x] 8.1 Define `OpportunityConnector` interface + registry (`packages/connectors`)
     - `SourceType` union, `DiscoveryRef`/`FetchResult`/`ParsedOpportunity`/`Checkpoint`/`HealthStatus`/`ConnectorContext`; connector registry allowing new sources without scheduler changes; connectors fetch only via injected `SafeFetcher`
     - _Requirements: 20.1, 20.3_
     - _Design: Connector Framework §1_
-  - [~] 8.2 Implement GreenhouseConnector
+  - [x] 8.2 Implement GreenhouseConnector
     - Public boards JSON; page `discover`; `parse` maps structured fields with `STRUCTURED_DATA` evidence; `isFirstParty = true`
     - _Requirements: 21.1, 21.2, 21.3_
     - _Design: Connector Framework §1 (concrete connectors)_
-  - [~] 8.3 Implement LeverConnector
+  - [x] 8.3 Implement LeverConnector
     - Public postings JSON; structured mapping; `isFirstParty = true`
     - _Requirements: 21.1, 21.2, 21.3_
-  - [~] 8.4 Implement AshbyConnector
+  - [x] 8.4 Implement AshbyConnector
     - Public job-board API (list + detail); structured mapping; `isFirstParty = true`
     - _Requirements: 21.1, 21.2, 21.3_
-  - [~] 8.5 Implement JsonLdConnector
+  - [x] 8.5 Implement JsonLdConnector
     - Extract `application/ld+json` `@type: JobPosting`; map schema.org fields; record health issue and fabricate nothing when no valid posting is present; `isFirstParty = true`
     - _Requirements: 22.1, 22.2, 22.3_
-  - [~] 8.6 Implement ManualUrlConnector
+  - [x] 8.6 Implement ManualUrlConnector
     - Single-URL fetch via SafeFetcher (same controls); JSON-LD path when present else best-effort `PARSER`; on parse/validation failure store the raw artifact and route to the Review_Queue
     - _Requirements: 23.1, 23.2, 23.3_
   - [ ]* 8.7 Write contract/fixture tests for parsers

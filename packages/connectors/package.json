@@ -16,5 +16,10 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@careerstack/observability": "workspace:*",
+    "@careerstack/security": "workspace:*",
+    "node-html-parser": "9.0.0"
   }
 }

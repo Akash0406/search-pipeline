@@ -160,11 +160,11 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - Expired/used magic link rejected; session revoke invalidates subsequent requests; revoke-others preserves current
     - _Requirements: 5.3, 6.2, 6.3_
 
-- [~] 5. Checkpoint — foundation, database, contracts, and auth
+- [x] 5. Checkpoint — foundation, database, contracts, and auth
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Slice 4 — Role Profiles module + UI
-  - [~] 6.1 Implement RoleProfilesModule
+  - [-] 6.1 Implement RoleProfilesModule
     - CRUD + `activate`/`pause`/`resume`/`duplicate`; enforce one-active via `user_preferences.active_role_profile_id`; first profile auto-activates; ownership enforced
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 11.1, 11.2, 12.1, 12.2, 13.1, 13.2, 14.1, 14.2, 15.1, 15.3, 16.1, 16.3, 16.4, 17.1, 17.2, 17.3, 18.1, 18.2, 18.3, 19.1, 19.4_
     - _Design: API §7 (role-profile routes), Auth §6 (ownership)_
@@ -188,23 +188,23 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - _Requirements: 15.3, 16.3, 16.4, 16.5_
 
 - [ ] 7. Slice 5 — Security package (canonical URL, SSRF guard, SafeFetcher, rate limiter, sanitizer)
-  - [~] 7.1 Implement canonical URL normalizer (pure)
+  - [-] 7.1 Implement canonical URL normalizer (pure)
     - Strip tracking params, normalize scheme/host casing, resolve to a stable first-party URL; used as an identity key
     - _Requirements: 36.1_
     - _Design: Normalization §3 (canonical URL resolution)_
-  - [~] 7.2 Implement SSRF guard (pure resolver policy)
+  - [-] 7.2 Implement SSRF guard (pure resolver policy)
     - DNS resolution + IP blocklist (private/loopback/link-local/unique-local/reserved/multicast/metadata), IP pinning against rebinding, redirect-target re-validation hook
     - _Requirements: 30.1, 30.2, 30.3_
     - _Design: Security §2 (SSRF guard)_
-  - [~] 7.3 Implement SafeFetcher
+  - [-] 7.3 Implement SafeFetcher
     - Domain deny/allow policy (deny beats allow), robots handling, descriptive User-Agent, conditional headers, timeout, redirect cap with per-hop SSRF re-check, content-type validation, streamed max-bytes cap
     - _Requirements: 31.1, 31.2, 31.3, 31.4, 31.5, 31.6, 31.7, 26.3, 28.2, 28.3, 28.4_
     - _Design: Security §2 (enforcement pipeline)_
-  - [~] 7.4 Implement per-domain rate limiter + backoff
+  - [-] 7.4 Implement per-domain rate limiter + backoff
     - Redis token-bucket keyed by registrable domain shared across connections; over-budget requests deferred; exponential backoff with jitter on throttle/5xx
     - _Requirements: 27.1, 27.2, 27.3_
     - _Design: Security §2 (rate limiting), Worker §9_
-  - [~] 7.5 Implement HTML sanitizer
+  - [ ] 7.5 Implement HTML sanitizer
     - Sanitize opportunity description HTML; never render raw markup (XSS defense)
     - _Requirements: 33.4_
     - _Design: Data Models (opportunity_content sanitized), Frontend §8_

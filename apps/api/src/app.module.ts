@@ -2,8 +2,9 @@
  * Root application module.
  *
  * Composes the global {@link CoreModule} (config/db/logger/clock/crypto), the
- * feature modules for this slice ({@link AuthModule}, {@link PrivacyModule},
- * {@link HealthModule}), and the global exception filter that renders the
+ * feature modules for this slice ({@link AuthModule},
+ * {@link RoleProfilesModule}, {@link PrivacyModule}, {@link HealthModule}), and
+ * the global exception filter that renders the
  * standard error envelope.
  */
 import { Module } from '@nestjs/common';
@@ -11,11 +12,12 @@ import { APP_FILTER } from '@nestjs/core';
 import { CoreModule } from './common/core.module.js';
 import { HttpExceptionFilter } from './common/http-exception.filter.js';
 import { AuthModule } from './auth/auth.module.js';
+import { RoleProfilesModule } from './role-profiles/role-profiles.module.js';
 import { PrivacyModule } from './privacy/privacy.module.js';
 import { HealthModule } from './health/health.module.js';
 
 @Module({
-  imports: [CoreModule, AuthModule, PrivacyModule, HealthModule],
+  imports: [CoreModule, AuthModule, RoleProfilesModule, PrivacyModule, HealthModule],
   providers: [{ provide: APP_FILTER, useClass: HttpExceptionFilter }],
 })
 export class AppModule {}

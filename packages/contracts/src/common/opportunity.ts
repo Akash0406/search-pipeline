@@ -8,11 +8,13 @@
 import { z } from 'zod';
 import {
   canonicalStatusSchema,
+  displayStatusSchema,
   employmentTypeSchema,
   extractionMethodSchema,
   salaryPeriodSchema,
   senioritySchema,
   sourceTypeSchema,
+  userStateSchema,
   workArrangementSchema,
 } from './enums.js';
 
@@ -73,6 +75,17 @@ export const opportunityListItemSchema = z.object({
   closingAt: z.string().optional(),
   isFirstParty: z.boolean(),
   duplicateGroupId: z.string().optional(),
+  /**
+   * The current user's per-user overlay for this opportunity (Req 43). Defaults
+   * to `none`. Computed from `opportunity_user_state`, scoped to the caller.
+   */
+  userState: userStateSchema,
+  /**
+   * The label to display (Req 46.1): the canonical {@link status} unless the
+   * user has saved/dismissed it, in which case the per-user overlay wins. Always
+   * a member of the fixed display vocabulary.
+   */
+  displayStatus: displayStatusSchema,
 });
 export type OpportunityListItem = z.infer<typeof opportunityListItemSchema>;
 

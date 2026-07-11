@@ -264,40 +264,40 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - Page without valid JobPosting → health issue recorded, zero opportunities produced
     - _Requirements: 22.2_
 
-- [~] 9. Checkpoint — role profiles, security, and connectors
+- [x] 9. Checkpoint — role profiles, security, and connectors
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Slice 7 — Ingestion pipeline (worker): queues, artifact storage, parse, normalize, dedup, outbox, closure/expiry, retention
-  - [~] 10.1 Implement normalization mapper (pure, `packages/shared`)
+- [x] 10. Slice 7 — Ingestion pipeline (worker): queues, artifact storage, parse, normalize, dedup, outbox, closure/expiry, retention
+  - [x] 10.1 Implement normalization mapper (pure, `packages/shared`)
     - Map `ParsedOpportunity` → canonical field values with one `Evidence` per fact; field normalization (title/location/workplace/employment/seniority/salary); leave match/analysis fields untouched
     - _Requirements: 33.1, 33.2, 33.3, 34.1, 34.2, 34.3, 34.4_
     - _Design: Normalization §3_
-  - [~] 10.2 Implement deduplication engine (pure, `packages/shared`)
+  - [x] 10.2 Implement deduplication engine (pure, `packages/shared`)
     - Exact-identity → normalized-fingerprint → fuzzy cascade; first-party-wins field selection; low-confidence fuzzy routes to review; deterministic + order-independent
     - _Requirements: 36.1, 36.2, 36.3, 36.4, 37.1_
     - _Design: Deduplication §4_
-  - [~] 10.3 Set up BullMQ queues, worker bootstrap, scheduler, graceful shutdown
+  - [x] 10.3 Set up BullMQ queues, worker bootstrap, scheduler, graceful shutdown
     - Queues `discovery|fetch|parse|normalize|dedup|expiry-check|retention-cleanup|outbox-dispatch`; scheduler runs discovery for active, non-paused connections only; SIGTERM drain; correlation IDs threaded
     - _Requirements: 20.2, 25.1, 56.1_
     - _Design: Worker §9_
-  - [~] 10.4 Implement discovery + fetch stages with raw-artifact storage
+  - [x] 10.4 Implement discovery + fetch stages with raw-artifact storage
     - `connector.discover` → per-ref fetch via SafeFetcher (rate limit, conditional GET, checkpoints); store `Raw_Artifact` in MinIO/S3 before parsing with connection/source/timestamp/`retention_until`; 304 short-circuits
     - _Requirements: 26.1, 26.2, 26.3, 27.1, 32.1, 32.2, 32.3_
     - _Design: High-level ingestion flow, Worker §9_
-  - [~] 10.5 Implement parse stage + review routing
+  - [x] 10.5 Implement parse stage + review routing
     - `connector.parse`, record `parser_runs`; schema-invalid records store artifact and enter `review_queue_items` with a failure reason
     - _Requirements: 35.1, 35.2, 35.3, 48.1_
-  - [~] 10.6 Implement normalize → canonical-URL → dedup → persist wiring
+  - [x] 10.6 Implement normalize → canonical-URL → dedup → persist wiring
     - Run normalization + canonical URL resolution + dedup; persist canonical opportunity, `opportunity_sources`, evidence transactionally with the outbox; retain all sources after merge
     - _Requirements: 36.2, 37.1, 37.2, 37.3_
     - _Design: High-level ingestion flow, Worker §9 (transactional outbox)_
-  - [~] 10.7 Implement expiry/closure + content-revision detection
+  - [x] 10.7 Implement expiry/closure + content-revision detection
     - `expiry-check` sets Closed/Removed/Expired from source signals, marks ambiguous closure uncertain; record `content_revisions` (changed fields + timestamps); update `last_updated_at`
     - _Requirements: 38.1, 38.2, 38.3, 39.1, 39.2, 39.3_
-  - [~] 10.8 Implement retention-cleanup + outbox-dispatch jobs
+  - [x] 10.8 Implement retention-cleanup + outbox-dispatch jobs
     - `retention-cleanup` deletes/anonymizes artifacts past the window keeping canonical opportunities accessible; `outbox-dispatch` publishes events at-least-once
     - _Requirements: 53.1, 53.2, 53.3_
-  - [~] 10.9 Implement connector-error isolation + DLQ
+  - [x] 10.9 Implement connector-error isolation + DLQ
     - Errors captured against the `Connection`/`connector_run` without killing the worker; exhausted retries move to the queue DLQ; other connectors keep running
     - _Requirements: 20.4, 24.3, 55.1, 55.2, 55.3_
   - [ ]* 10.10 Property test — **Property 2: Dedup idempotence** — _Requirements: 36_ — _Properties: P2_
@@ -316,11 +316,11 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - _Requirements: 32.1, 33.1, 37.1, 37.3_
 
 - [ ] 11. Slice 8 — Opportunities module + explorer UI + detail
-  - [~] 11.1 Implement OpportunitiesModule endpoints
+  - [x] 11.1 Implement OpportunitiesModule endpoints
     - `GET /opportunities` (filters + sort + cursor, projection excludes `description`), `GET /opportunities/{id}` (full detail + sources + evidence), `PUT/DELETE /opportunities/{id}/save` and `/dismiss` (per-user, ownership-scoped)
     - _Requirements: 40.3, 43.1, 43.2, 43.3, 43.4, 45.1, 45.2, 58.3_
     - _Design: API §7 (opportunities routes)_
-  - [~] 11.2 Implement filter + sort query builder (repository)
+  - [x] 11.2 Implement filter + sort query builder (repository)
     - Translate filter/sort DTO into indexed queries (`status,last_updated_at desc`, company, closing_at, first_seen_at, fingerprint, per-user state); cursor pagination
     - _Requirements: 41.1, 41.2, 41.3, 41.4, 41.5, 42.1, 42.2, 42.3, 58.1_
     - _Design: Data Models → Indexing strategy_

@@ -1,39 +1,29 @@
+import * as React from 'react';
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { Building2, Radar } from 'lucide-react';
-import { Button } from '@careerstack/ui';
 import { PageHeader } from '@/components/app/page-header';
-import { EmptyState } from '@/components/common/states';
+import { OpportunityExplorer } from '@/components/opportunities/explorer';
+import { ResultsSkeleton } from '@/components/opportunities/result-states';
 
 export const metadata: Metadata = {
   title: 'Opportunities',
 };
 
 /**
- * Explorer placeholder. The card/list/table explorer, filters, sort, and URL
- * state are built in a later task (11.x); this page provides the route and an
- * accessible empty state so the shell is fully navigable.
+ * Opportunity explorer route (Req 40–44). The interactive explorer is a client
+ * component (URL-driven filters/sort, save/dismiss mutations, view switching);
+ * it reads the URL via `useSearchParams`, so it renders inside a Suspense
+ * boundary per the App Router contract.
  */
 export default function OpportunitiesPage() {
   return (
     <>
       <PageHeader
         title="Opportunities"
-        description="Browse roles discovered across your connected sources."
+        description="Browse roles discovered across your connected sources. Filter, sort, and save what matters."
       />
-      <EmptyState
-        icon={Radar}
-        title="No opportunities yet"
-        description="Connect a source and set an active role profile — discovered opportunities will show up here to browse, filter, and save."
-        action={
-          <Button asChild>
-            <Link href="/app/sources">
-              <Building2 className="size-4" aria-hidden />
-              Connect a source
-            </Link>
-          </Button>
-        }
-      />
+      <React.Suspense fallback={<ResultsSkeleton view="card" />}>
+        <OpportunityExplorer />
+      </React.Suspense>
     </>
   );
 }

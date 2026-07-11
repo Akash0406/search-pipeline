@@ -163,16 +163,16 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
 - [x] 5. Checkpoint — foundation, database, contracts, and auth
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Slice 4 — Role Profiles module + UI
+- [x] 6. Slice 4 — Role Profiles module + UI
   - [x] 6.1 Implement RoleProfilesModule
     - CRUD + `activate`/`pause`/`resume`/`duplicate`; enforce one-active via `user_preferences.active_role_profile_id`; first profile auto-activates; ownership enforced
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 11.1, 11.2, 12.1, 12.2, 13.1, 13.2, 14.1, 14.2, 15.1, 15.3, 16.1, 16.3, 16.4, 17.1, 17.2, 17.3, 18.1, 18.2, 18.3, 19.1, 19.4_
     - _Design: API §7 (role-profile routes), Auth §6 (ownership)_
-  - [~] 6.2 Build role-profile create/edit UI
+  - [x] 6.2 Build role-profile create/edit UI
     - Target/excluded titles, required/preferred skills, locations, work arrangement, employment type, seniority, optional salary, optional work-rights with pre-collection explainer; empty/loading/error states
     - _Requirements: 11.1, 12.1, 13.1, 13.2, 14.1, 14.2, 15.1, 16.1, 16.2, 56.1_
     - _Design: Frontend §8 (/app/profiles, required states)_
-  - [~] 6.3 Wire active-profile switching + indicator
+  - [x] 6.3 Wire active-profile switching + indicator
     - Activate action deactivates previous; delete-active and pause-active prompt for a new active selection; feed the shell's active-profile indicator
     - _Requirements: 10.3, 18.2, 19.2, 19.3_
     - _Design: Frontend §8 (app shell active-profile indicator)_

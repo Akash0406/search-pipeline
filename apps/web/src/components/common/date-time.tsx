@@ -20,12 +20,7 @@ export interface DateTimeProps extends React.TimeHTMLAttributes<HTMLTimeElement>
   timezone?: string;
 }
 
-export function DateTime({
-  value,
-  mode = 'relative',
-  timezone,
-  ...props
-}: DateTimeProps) {
+export function DateTime({ value, mode = 'relative', timezone, ...props }: DateTimeProps) {
   const exact = formatExact(value, timezone);
   const label = mode === 'relative' ? formatRelative(value) : formatDateTime(value, timezone);
 

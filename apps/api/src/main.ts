@@ -10,10 +10,7 @@
  */
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
-import {
-  FastifyAdapter,
-  type NestFastifyApplication,
-} from '@nestjs/platform-fastify';
+import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import fastifyCookie from '@fastify/cookie';
 import { loadConfig } from '@careerstack/config';
 import { generateCorrelationId } from '@careerstack/observability';
@@ -30,10 +27,22 @@ export async function bootstrap(): Promise<NestFastifyApplication> {
 
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter);
 
+  // Echo the per-request id as `X-Request-Id` on EVERY response — successes,
+  // errors, and 404s alike. This id equals the correlation id (see `genReqId`)
+  // and the `requestId` in the standard error envelope, so clients can correlate
+  // any response with server-side logs (Design API §7).
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .addHook('onSend', (request, reply, payload, done) => {
+      reply.header('x-request-id', String(request.id ?? ''));
+      done(null, payload);
+    });
+
   await app.register(fastifyCookie, { secret: config.auth.session.secret });
 
   app.setGlobalPrefix(API_PREFIX, {
-    exclude: ['health/live', 'health/ready'],
+    exclude: ['health/live', 'health/ready', 'health/dependencies'],
   });
 
   const port = Number(process.env.PORT ?? 3000);

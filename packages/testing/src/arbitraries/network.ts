@@ -107,12 +107,16 @@ export function arbUnspecifiedIpv6(): fc.Arbitrary<string> {
 
 /** IPv6 link-local: `fe80::/10`. */
 export function arbLinkLocalIpv6(): fc.Arbitrary<string> {
-  return fc.array(hextet(), { minLength: 3, maxLength: 3 }).map((groups) => `fe80::${groups.join(':')}`);
+  return fc
+    .array(hextet(), { minLength: 3, maxLength: 3 })
+    .map((groups) => `fe80::${groups.join(':')}`);
 }
 
 /** IPv6 unique-local: `fc00::/7`. */
 export function arbUniqueLocalIpv6(): fc.Arbitrary<string> {
-  return fc.array(hextet(), { minLength: 3, maxLength: 3 }).map((groups) => `fd00::${groups.join(':')}`);
+  return fc
+    .array(hextet(), { minLength: 3, maxLength: 3 })
+    .map((groups) => `fd00::${groups.join(':')}`);
 }
 
 /** IPv6 cloud metadata endpoint: `fd00:ec2::254`. */

@@ -42,9 +42,7 @@ function jaro(a: string, b: string): number {
   }
   transpositions /= 2;
 
-  return (
-    (matches / aLen + matches / bLen + (matches - transpositions) / matches) / 3
-  );
+  return (matches / aLen + matches / bLen + (matches - transpositions) / matches) / 3;
 }
 
 /**

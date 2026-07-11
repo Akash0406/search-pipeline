@@ -32,7 +32,14 @@ const FORBIDDEN_DOMAIN_IMPORTS = {
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/build/**', '**/.next/**', '**/out/**', '**/coverage/**', '**/.turbo/**'],
+    ignores: [
+      '**/dist/**',
+      '**/build/**',
+      '**/.next/**',
+      '**/out/**',
+      '**/coverage/**',
+      '**/.turbo/**',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

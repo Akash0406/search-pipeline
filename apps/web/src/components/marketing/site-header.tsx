@@ -48,7 +48,10 @@ export function SiteHeader() {
           compact ? 'h-14' : 'h-16',
         )}
       >
-        <Link href="/" className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <Link
+          href="/"
+          className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           <BrandMark className="text-lg" />
         </Link>
 
@@ -94,7 +97,12 @@ export function SiteHeader() {
                     <Link href={item.href}>{item.label}</Link>
                   </Button>
                 ))}
-                <Button asChild variant="ghost" className="justify-start" onClick={() => setOpen(false)}>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="justify-start"
+                  onClick={() => setOpen(false)}
+                >
                   <Link href="/security">Security</Link>
                 </Button>
               </div>

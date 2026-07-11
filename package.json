@@ -8,7 +8,9 @@
     "node": ">=20"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"],
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ],
     "overrides": {
       "react": "19.3.0-canary-3f0b9e61-20260317",
       "react-dom": "19.3.0-canary-3f0b9e61-20260317"
@@ -18,6 +20,7 @@
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
+    "test": "turbo run test",
     "clean": "turbo run clean",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

@@ -25,16 +25,9 @@
  */
 
 import { canonicalizeUrl } from '@careerstack/security';
-import type {
-  EvidenceValue,
-  ParsedOpportunity,
-} from '@careerstack/connectors';
+import type { EvidenceValue, ParsedOpportunity } from '@careerstack/connectors';
 
-import {
-  mapEmploymentType,
-  mapSeniority,
-  mapWorkArrangement,
-} from './enum-mappers.js';
+import { mapEmploymentType, mapSeniority, mapWorkArrangement } from './enum-mappers.js';
 import { computeFingerprint } from './fingerprint.js';
 import { locationKey, looksRemote, parseLocation } from './location.js';
 import { normalizeSalary } from './salary.js';
@@ -79,10 +72,7 @@ function resolveCanonicalUrl(candidates: ReadonlyArray<string | undefined>): str
  * signal). Pure and deterministic: identical inputs always yield an identical
  * result.
  */
-export function normalize(
-  parsed: ParsedOpportunity,
-  source: SourceMeta,
-): NormalizationResult {
+export function normalize(parsed: ParsedOpportunity, source: SourceMeta): NormalizationResult {
   const evidence: Evidence[] = [];
   const artifactId = source.rawArtifactId;
 
@@ -137,8 +127,7 @@ export function normalize(
       evidence.push(toEvidence('locations', loc));
     }
   }
-  const isRemote =
-    remoteFromArrangement || locations.some((l) => l.isRemote);
+  const isRemote = remoteFromArrangement || locations.some((l) => l.isRemote);
 
   // --- Employment type (enum, omitted if unmappable) ------------------------
   let employmentType = parsed.employmentType

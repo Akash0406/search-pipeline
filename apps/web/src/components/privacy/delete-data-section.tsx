@@ -78,8 +78,7 @@ export function DeleteDataSection() {
       },
       onError: (error) => {
         toast.error('Couldn’t delete the selected data', {
-          description:
-            error instanceof ApiError ? error.message : 'Please try again in a moment.',
+          description: error instanceof ApiError ? error.message : 'Please try again in a moment.',
         });
       },
     });
@@ -133,10 +132,8 @@ export function DeleteDataSection() {
             <DialogTitle>Delete selected data?</DialogTitle>
             <DialogDescription>
               This permanently removes{' '}
-              {chosen
-                .map((c) => CATEGORIES.find((cat) => cat.value === c)?.label ?? c)
-                .join(', ')}
-              . This can’t be undone.
+              {chosen.map((c) => CATEGORIES.find((cat) => cat.value === c)?.label ?? c).join(', ')}.
+              This can’t be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

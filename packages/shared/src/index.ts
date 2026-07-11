@@ -47,12 +47,7 @@ export {
 
 // --- Pure building blocks (reusable + independently testable) ---------------
 export { computeFingerprint, type FingerprintInput } from './fingerprint.js';
-export {
-  collapseWhitespace,
-  normalizeTitle,
-  normalizeCompany,
-  tokenize,
-} from './text.js';
+export { collapseWhitespace, normalizeTitle, normalizeCompany, tokenize } from './text.js';
 export { parseLocation, locationKey, looksRemote } from './location.js';
 export { normalizeSalary } from './salary.js';
 export {

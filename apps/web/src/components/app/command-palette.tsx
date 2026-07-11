@@ -98,10 +98,24 @@ export function CommandPalette({
         <CommandGroup heading="Quick actions">
           <CommandItem
             value="Create role profile"
-            onSelect={() => run(() => router.push('/app/profiles?new=1'))}
+            onSelect={() => run(() => router.push('/app/profiles/new'))}
           >
             <span>Create a role profile</span>
             <CommandShortcut>Profiles</CommandShortcut>
+          </CommandItem>
+          <CommandItem
+            value="Connect a source"
+            onSelect={() => run(() => router.push('/app/sources?connect=1'))}
+          >
+            <span>Connect a source</span>
+            <CommandShortcut>Sources</CommandShortcut>
+          </CommandItem>
+          <CommandItem
+            value="Save a URL"
+            onSelect={() => run(() => router.push('/app/sources?save-url=1'))}
+          >
+            <span>Save a URL</span>
+            <CommandShortcut>Sources</CommandShortcut>
           </CommandItem>
         </CommandGroup>
       </CommandList>

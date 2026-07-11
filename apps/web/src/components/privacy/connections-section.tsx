@@ -64,8 +64,7 @@ export function ConnectionsSection() {
       },
       onError: (error) => {
         toast.error('Couldn’t disconnect the source', {
-          description:
-            error instanceof ApiError ? error.message : 'Please try again in a moment.',
+          description: error instanceof ApiError ? error.message : 'Please try again in a moment.',
         });
       },
     });
@@ -101,10 +100,7 @@ export function ConnectionsSection() {
         ) : (
           <ul className="divide-y rounded-lg border">
             {connections.map((connection) => (
-              <li
-                key={connection.id}
-                className="flex items-center justify-between gap-3 px-3 py-3"
-              >
+              <li key={connection.id} className="flex items-center justify-between gap-3 px-3 py-3">
                 <div className="min-w-0">
                   <p className="truncate font-medium">{connectionLabel(connection)}</p>
                   <p className="text-xs text-muted-foreground">

@@ -45,9 +45,7 @@ export class ApiError extends Error {
 /** Read a cookie value in the browser (used for the CSRF double-submit token). */
 function readCookie(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
-  const match = document.cookie
-    .split('; ')
-    .find((row) => row.startsWith(`${name}=`));
+  const match = document.cookie.split('; ').find((row) => row.startsWith(`${name}=`));
   return match ? decodeURIComponent(match.slice(name.length + 1)) : undefined;
 }
 

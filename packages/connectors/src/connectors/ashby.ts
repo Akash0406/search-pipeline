@@ -11,17 +11,9 @@
  * Endpoint: https://api.ashbyhq.com/posting-api/job-board/{slug}?includeCompensation=true
  */
 
-import {
-  BaseConnector,
-  optionalStringConfig,
-  requireStringConfig,
-} from '../base-connector.js';
+import { BaseConnector, optionalStringConfig, requireStringConfig } from '../base-connector.js';
 import { structuredEvidence, structuredList } from '../evidence.js';
-import {
-  DEFAULT_FETCH_BOUNDS,
-  JSON_CONTENT_TYPES,
-  buildFetchOptions,
-} from '../fetch-options.js';
+import { DEFAULT_FETCH_BOUNDS, JSON_CONTENT_TYPES, buildFetchOptions } from '../fetch-options.js';
 import type {
   Checkpoint,
   ConnectorContext,
@@ -87,10 +79,7 @@ export class AshbyConnector extends BaseConnector {
     return `${BASE_URL}/${encodeURIComponent(slug)}?includeCompensation=true`;
   }
 
-  async *discover(
-    ctx: ConnectorContext,
-    checkpoint: Checkpoint,
-  ): AsyncIterable<DiscoveryRef> {
+  async *discover(ctx: ConnectorContext, checkpoint: Checkpoint): AsyncIterable<DiscoveryRef> {
     const slug = requireStringConfig(ctx, 'slug');
     const url = this.boardUrl(slug);
     const options = buildFetchOptions({
@@ -155,10 +144,7 @@ export class AshbyConnector extends BaseConnector {
     return job ? syntheticJsonArtifact(job, result) : result;
   }
 
-  async parse(
-    ctx: ConnectorContext,
-    artifact: FetchResult,
-  ): Promise<ParsedOpportunity> {
+  async parse(ctx: ConnectorContext, artifact: FetchResult): Promise<ParsedOpportunity> {
     const rawArtifactId = resolveRawArtifactId(ctx, artifact);
     const job = parseJsonBody<AshbyJob>(artifact) ?? {};
     const company = optionalStringConfig(ctx, 'company');
@@ -222,19 +208,13 @@ export function mapAshbyJob(
   const workArrangement = structuredEvidence(workArrangementValue, rawArtifactId);
   if (workArrangement) parsed.workArrangement = workArrangement;
 
-  const employmentType = structuredEvidence(
-    cleanString(job.employmentType),
-    rawArtifactId,
-  );
+  const employmentType = structuredEvidence(cleanString(job.employmentType), rawArtifactId);
   if (employmentType) parsed.employmentType = employmentType;
 
   const postedAt = structuredEvidence(toIsoDate(job.publishedAt), rawArtifactId);
   if (postedAt) parsed.postedAt = postedAt;
 
-  const descriptionHtml = structuredEvidence(
-    cleanString(job.descriptionHtml),
-    rawArtifactId,
-  );
+  const descriptionHtml = structuredEvidence(cleanString(job.descriptionHtml), rawArtifactId);
   if (descriptionHtml) parsed.descriptionHtml = descriptionHtml;
 
   const applyUrl = structuredEvidence(
@@ -257,9 +237,7 @@ export function mapAshbyJob(
   return parsed;
 }
 
-function extractAshbySalary(
-  compensation: AshbyCompensation | undefined,
-): ParsedSalary | undefined {
+function extractAshbySalary(compensation: AshbyCompensation | undefined): ParsedSalary | undefined {
   const component = compensation?.summaryComponents?.find(
     (c) => c.minValue !== undefined || c.maxValue !== undefined,
   );

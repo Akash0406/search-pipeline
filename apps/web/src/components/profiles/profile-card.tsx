@@ -2,15 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import {
-  Copy,
-  MoreHorizontal,
-  Pause,
-  Pencil,
-  Play,
-  Star,
-  Trash2,
-} from 'lucide-react';
+import { Copy, MoreHorizontal, Pause, Pencil, Play, Star, Trash2 } from 'lucide-react';
 import type { RoleProfileListItem } from '@careerstack/contracts';
 import {
   Badge,

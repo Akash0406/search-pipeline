@@ -81,7 +81,12 @@ export class RoleProfilesService {
     if (dto.name !== undefined) scalars.name = dto.name;
     Object.assign(scalars, this.scalarsFromDto(dto));
 
-    const updated = await this.repo.updateWithChildren(id, userId, scalars, this.childrenFromDto(dto));
+    const updated = await this.repo.updateWithChildren(
+      id,
+      userId,
+      scalars,
+      this.childrenFromDto(dto),
+    );
     if (!updated) throw this.notFound();
     return this.getDetail(userId, id);
   }
@@ -99,7 +104,12 @@ export class RoleProfilesService {
 
     const wasActive = activeId === id;
     if (!wasActive) {
-      return { status: 'deleted', deletedId: id, newActiveProfileId: null, requiresActiveSelection: false };
+      return {
+        status: 'deleted',
+        deletedId: id,
+        newActiveProfileId: null,
+        requiresActiveSelection: false,
+      };
     }
 
     // The DB cleared the active pointer (on delete set null). Pick a replacement
@@ -107,7 +117,12 @@ export class RoleProfilesService {
     const { profiles } = await this.repo.listForOwnerWithActive(userId);
     const replacement = profiles.find((p) => p.status === 'active') ?? profiles[0];
     if (!replacement) {
-      return { status: 'deleted', deletedId: id, newActiveProfileId: null, requiresActiveSelection: false };
+      return {
+        status: 'deleted',
+        deletedId: id,
+        newActiveProfileId: null,
+        requiresActiveSelection: false,
+      };
     }
     await this.repo.setActive(userId, replacement.id);
     if (replacement.status !== 'active') {
@@ -154,8 +169,14 @@ export class RoleProfilesService {
         workRights: hydrated.profile.workRights,
       },
       {
-        titles: hydrated.titles.map((t) => ({ kind: t.kind as 'target' | 'excluded', value: t.value })),
-        skills: hydrated.skills.map((s) => ({ kind: s.kind as 'required' | 'preferred', value: s.value })),
+        titles: hydrated.titles.map((t) => ({
+          kind: t.kind as 'target' | 'excluded',
+          value: t.value,
+        })),
+        skills: hydrated.skills.map((s) => ({
+          kind: s.kind as 'required' | 'preferred',
+          value: s.value,
+        })),
         locations: hydrated.locations.map((l) => ({ value: l.value, isPrimary: l.isPrimary })),
         preferences: {
           workArrangements: hydrated.preferences?.workArrangements ?? [],
@@ -173,11 +194,7 @@ export class RoleProfilesService {
    * different profile before pausing; otherwise a 409 asks the caller to choose
    * one. When it is the user's only profile, pausing clears the active pointer.
    */
-  async pause(
-    userId: string,
-    id: string,
-    activateProfileId?: string,
-  ): Promise<RoleProfileDetail> {
+  async pause(userId: string, id: string, activateProfileId?: string): Promise<RoleProfileDetail> {
     const activeId = await this.repo.getActiveProfileId(userId);
     const isActive = activeId === id;
 
@@ -192,7 +209,9 @@ export class RoleProfilesService {
           );
         }
         if (activateProfileId === id) {
-          throw new ConflictException('The replacement active profile must be a different profile.');
+          throw new ConflictException(
+            'The replacement active profile must be a different profile.',
+          );
         }
         const activated = await this.repo.activateOwned(activateProfileId, userId);
         if (!activated) {
@@ -266,7 +285,10 @@ export class RoleProfilesService {
       ];
     }
     if (dto.locations !== undefined) {
-      children.locations = dto.locations.map((l) => ({ value: l.value, isPrimary: l.isPrimary ?? false }));
+      children.locations = dto.locations.map((l) => ({
+        value: l.value,
+        isPrimary: l.isPrimary ?? false,
+      }));
     }
     if (dto.preferences !== undefined) {
       children.preferences = {
@@ -303,9 +325,12 @@ export class RoleProfilesService {
       },
       locations: locations.map((l) => ({ value: l.value, isPrimary: l.isPrimary })),
       preferences: {
-        workArrangements: (preferences?.workArrangements ?? []) as RoleProfileDetail['preferences']['workArrangements'],
-        employmentTypes: (preferences?.employmentTypes ?? []) as RoleProfileDetail['preferences']['employmentTypes'],
-        seniorityLevels: (preferences?.seniorityLevels ?? []) as RoleProfileDetail['preferences']['seniorityLevels'],
+        workArrangements: (preferences?.workArrangements ??
+          []) as RoleProfileDetail['preferences']['workArrangements'],
+        employmentTypes: (preferences?.employmentTypes ??
+          []) as RoleProfileDetail['preferences']['employmentTypes'],
+        seniorityLevels: (preferences?.seniorityLevels ??
+          []) as RoleProfileDetail['preferences']['seniorityLevels'],
       },
     };
 

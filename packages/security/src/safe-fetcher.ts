@@ -182,8 +182,7 @@ export class SafeFetcher {
     this.rateLimiter = deps.rateLimiter;
     this.robots = deps.robots ?? new AllowAllRobotsChecker();
     this.logger = deps.logger;
-    this.fetchImpl =
-      deps.fetchImpl ?? ((url, init) => fetch(url, init as unknown as RequestInit));
+    this.fetchImpl = deps.fetchImpl ?? ((url, init) => fetch(url, init as unknown as RequestInit));
     this.dispatcherFactory = deps.dispatcherFactory;
   }
 
@@ -290,9 +289,7 @@ export class SafeFetcher {
       }
 
       const body =
-        method === 'HEAD'
-          ? Buffer.alloc(0)
-          : await readCapped(response.body, opts.maxBytes, abort);
+        method === 'HEAD' ? Buffer.alloc(0) : await readCapped(response.body, opts.maxBytes, abort);
 
       this.logger?.debug('security.fetch.completed', {
         stage: 'fetch',

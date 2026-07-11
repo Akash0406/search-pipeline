@@ -12,9 +12,21 @@ export const metadata: Metadata = {
 };
 
 const LIVE = [
-  { icon: Layers, title: 'Public ATS feeds', body: 'Greenhouse, Lever, and Ashby public job boards, classified as first-party sources.' },
-  { icon: Building2, title: 'Company career pages', body: 'Pages publishing schema.org JobPosting JSON-LD are parsed directly from the source.' },
-  { icon: Link2, title: 'Manual URL submission', body: 'Paste any job posting URL and we fetch and parse it under the same safety controls.' },
+  {
+    icon: Layers,
+    title: 'Public ATS feeds',
+    body: 'Greenhouse, Lever, and Ashby public job boards, classified as first-party sources.',
+  },
+  {
+    icon: Building2,
+    title: 'Company career pages',
+    body: 'Pages publishing schema.org JobPosting JSON-LD are parsed directly from the source.',
+  },
+  {
+    icon: Link2,
+    title: 'Manual URL submission',
+    body: 'Paste any job posting URL and we fetch and parse it under the same safety controls.',
+  },
 ];
 
 const PLANNED = [
@@ -71,8 +83,8 @@ export default function SourcesPage() {
             ))}
           </ul>
           <p className="max-w-2xl text-sm text-muted-foreground">
-            We never bypass CAPTCHAs, rate limits, anti-bot measures, or authentication, and we never
-            scrape private, logged-in content.
+            We never bypass CAPTCHAs, rate limits, anti-bot measures, or authentication, and we
+            never scrape private, logged-in content.
           </p>
           <Button asChild>
             <Link href="/signin">Connect a source</Link>

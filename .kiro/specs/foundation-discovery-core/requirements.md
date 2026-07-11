@@ -8,7 +8,7 @@ The platform is initially Australia-focused, delivered as a responsive web appli
 
 The brand/display name of the application MUST be configurable from a central configuration source so the working name ("CareerStack") and the product name ("CareerRadar AI") can be changed without code edits scattered across the codebase.
 
-This document uses EARS-format acceptance criteria grouped by capability. PRD requirement identifiers (AUTH-*, PROF-*, SRC-*, OPP-*, PRIV-*, RES-*, UX-*, SEC-*, A11Y-*, PERF-*) are preserved where they map, and priorities (P0/P1/P2) are noted per requirement.
+This document uses EARS-format acceptance criteria grouped by capability. PRD requirement identifiers (AUTH-_, PROF-_, SRC-_, OPP-_, PRIV-_, RES-_, UX-_, SEC-_, A11Y-_, PERF-_) are preserved where they map, and priorities (P0/P1/P2) are noted per requirement.
 
 ### Personas
 
@@ -730,6 +730,6 @@ The following are explicitly OUT OF SCOPE for `foundation-discovery-core` and wi
 
 ## Traceability Notes
 
-- PRD IDs are preserved inline (AUTH-*, PROF-*, SRC-*, OPP-*, PRIV-*, RES-*, SEC-*, A11Y-*, PERF-*). SEC-*, RES-*, UX-*, A11Y-*, and PERF-* IDs are introduced here to encode the non-negotiable cross-cutting rules as verifiable requirements.
+- PRD IDs are preserved inline (AUTH-_, PROF-_, SRC-_, OPP-_, PRIV-_, RES-_, SEC-_, A11Y-_, PERF-_). SEC-_, RES-_, UX-_, A11Y-_, and PERF-_ IDs are introduced here to encode the non-negotiable cross-cutting rules as verifiable requirements.
 - Hard_Blocker constraints are consolidated in D9 (SRC-009) and referenced from connector security (Capability E).
 - Match scoring and AI analysis remain out of scope; F2 and G6 reserve model/UI space without implementing them.

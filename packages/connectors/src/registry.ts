@@ -33,9 +33,7 @@ export class ConnectorRegistry {
   require(sourceType: SourceType): OpportunityConnector {
     const connector = this.byType.get(sourceType);
     if (!connector) {
-      throw new Error(
-        `No connector registered for source type "${sourceType}"`,
-      );
+      throw new Error(`No connector registered for source type "${sourceType}"`);
     }
     return connector;
   }

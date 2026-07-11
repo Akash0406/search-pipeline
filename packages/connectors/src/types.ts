@@ -41,12 +41,7 @@ export type SourceType =
   | 'gmail'; // RESERVED: future spec, never implemented in this slice
 
 /** The uppercase extraction methods mandated by the glossary / OPP-003. */
-export type ExtractionMethod =
-  | 'STRUCTURED_DATA'
-  | 'RULE'
-  | 'PARSER'
-  | 'LLM'
-  | 'USER';
+export type ExtractionMethod = 'STRUCTURED_DATA' | 'RULE' | 'PARSER' | 'LLM' | 'USER';
 
 /** A reference discovered on a source, before fetch. */
 export interface DiscoveryRef {
@@ -170,15 +165,8 @@ export interface OpportunityConnector {
   /** greenhouse/lever/ashby/jsonld = true (SRC-002.3, SRC-003.3). */
   readonly isFirstParty: boolean;
 
-  discover(
-    ctx: ConnectorContext,
-    checkpoint: Checkpoint,
-  ): AsyncIterable<DiscoveryRef>;
-  fetch(
-    ctx: ConnectorContext,
-    ref: DiscoveryRef,
-    checkpoint: Checkpoint,
-  ): Promise<FetchResult>;
+  discover(ctx: ConnectorContext, checkpoint: Checkpoint): AsyncIterable<DiscoveryRef>;
+  fetch(ctx: ConnectorContext, ref: DiscoveryRef, checkpoint: Checkpoint): Promise<FetchResult>;
   parse(ctx: ConnectorContext, artifact: FetchResult): Promise<ParsedOpportunity>;
   healthCheck(ctx: ConnectorContext): Promise<HealthStatus>;
   getCheckpoint(ctx: ConnectorContext): Promise<Checkpoint | null>;

@@ -17,11 +17,7 @@ import { parse as parseHtml } from 'node-html-parser';
 
 import { BaseConnector, requireStringConfig } from '../base-connector.js';
 import { parserEvidence } from '../evidence.js';
-import {
-  DEFAULT_FETCH_BOUNDS,
-  JSONLD_CONTENT_TYPES,
-  buildFetchOptions,
-} from '../fetch-options.js';
+import { DEFAULT_FETCH_BOUNDS, JSONLD_CONTENT_TYPES, buildFetchOptions } from '../fetch-options.js';
 import {
   extractJsonLdJobPostings,
   isJobPosting,
@@ -63,10 +59,7 @@ export class ManualUrlConnector extends BaseConnector {
   readonly sourceType: SourceType = 'manual_url';
   readonly isFirstParty = false;
 
-  async *discover(
-    ctx: ConnectorContext,
-    _checkpoint: Checkpoint,
-  ): AsyncIterable<DiscoveryRef> {
+  async *discover(ctx: ConnectorContext, _checkpoint: Checkpoint): AsyncIterable<DiscoveryRef> {
     const url = submittedUrl(ctx);
     yield {
       sourceType: this.sourceType,
@@ -92,10 +85,7 @@ export class ManualUrlConnector extends BaseConnector {
     return ctx.fetcher.fetch(ref.url, options);
   }
 
-  async parse(
-    ctx: ConnectorContext,
-    artifact: FetchResult,
-  ): Promise<ParsedOpportunity> {
+  async parse(ctx: ConnectorContext, artifact: FetchResult): Promise<ParsedOpportunity> {
     const rawArtifactId = resolveRawArtifactId(ctx, artifact);
     const text = bodyText(artifact);
 
@@ -168,8 +158,7 @@ export function parseHtmlBestEffort(
   const companyValue = metaContent('meta[property="og:site_name"]');
 
   const descriptionValue =
-    metaContent('meta[name="description"]') ??
-    metaContent('meta[property="og:description"]');
+    metaContent('meta[name="description"]') ?? metaContent('meta[property="og:description"]');
 
   const canonicalValue =
     cleanString(root.querySelector('link[rel="canonical"]')?.getAttribute('href')) ??
@@ -208,7 +197,5 @@ export function resolveFirstPartyFromUrl(url: string): boolean {
   } catch {
     return false;
   }
-  return FIRST_PARTY_HOST_SUFFIXES.some(
-    (suffix) => host === suffix || host.endsWith(`.${suffix}`),
-  );
+  return FIRST_PARTY_HOST_SUFFIXES.some((suffix) => host === suffix || host.endsWith(`.${suffix}`));
 }

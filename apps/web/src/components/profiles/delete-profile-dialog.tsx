@@ -39,9 +39,7 @@ export function DeleteProfileDialog({
           <DialogTitle>Delete “{profileName}”?</DialogTitle>
           <DialogDescription>
             This permanently removes the profile and its preferences. This can&apos;t be undone.
-            {isActive
-              ? ' Because it’s your active profile, we’ll switch you to another one.'
-              : ''}
+            {isActive ? ' Because it’s your active profile, we’ll switch you to another one.' : ''}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

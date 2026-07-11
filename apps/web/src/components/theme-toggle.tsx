@@ -16,12 +16,15 @@ import {
 } from '@careerstack/ui';
 import { persistTheme } from '@/lib/api/hooks';
 
-const OPTIONS: { value: Theme; label: string; icon: React.ComponentType<{ className?: string }> }[] =
-  [
-    { value: 'light', label: 'Light', icon: Sun },
-    { value: 'dark', label: 'Dark', icon: Moon },
-    { value: 'system', label: 'System', icon: Monitor },
-  ];
+const OPTIONS: {
+  value: Theme;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+}[] = [
+  { value: 'light', label: 'Light', icon: Sun },
+  { value: 'dark', label: 'Dark', icon: Moon },
+  { value: 'system', label: 'System', icon: Monitor },
+];
 
 /**
  * Theme switcher (Req 3.5, 3.6). Applies the selection instantly via next-themes

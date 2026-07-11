@@ -9,17 +9,9 @@
  *  - detail: https://boards-api.greenhouse.io/v1/boards/{slug}/jobs/{id}
  */
 
-import {
-  BaseConnector,
-  optionalStringConfig,
-  requireStringConfig,
-} from '../base-connector.js';
+import { BaseConnector, optionalStringConfig, requireStringConfig } from '../base-connector.js';
 import { structuredEvidence, structuredList } from '../evidence.js';
-import {
-  DEFAULT_FETCH_BOUNDS,
-  JSON_CONTENT_TYPES,
-  buildFetchOptions,
-} from '../fetch-options.js';
+import { DEFAULT_FETCH_BOUNDS, JSON_CONTENT_TYPES, buildFetchOptions } from '../fetch-options.js';
 import type {
   Checkpoint,
   ConnectorContext,
@@ -67,10 +59,7 @@ export class GreenhouseConnector extends BaseConnector {
     return `${BASE_URL}/${encodeURIComponent(slug)}/jobs/${encodeURIComponent(id)}`;
   }
 
-  async *discover(
-    ctx: ConnectorContext,
-    checkpoint: Checkpoint,
-  ): AsyncIterable<DiscoveryRef> {
+  async *discover(ctx: ConnectorContext, checkpoint: Checkpoint): AsyncIterable<DiscoveryRef> {
     const slug = requireStringConfig(ctx, 'slug');
     const url = this.listUrl(slug);
     const options = buildFetchOptions({
@@ -126,10 +115,7 @@ export class GreenhouseConnector extends BaseConnector {
     return ctx.fetcher.fetch(ref.url, options);
   }
 
-  async parse(
-    ctx: ConnectorContext,
-    artifact: FetchResult,
-  ): Promise<ParsedOpportunity> {
+  async parse(ctx: ConnectorContext, artifact: FetchResult): Promise<ParsedOpportunity> {
     const rawArtifactId = resolveRawArtifactId(ctx, artifact);
     const job = parseJsonBody<GreenhouseJob>(artifact) ?? {};
     return mapGreenhouseJob(job, rawArtifactId);
@@ -164,10 +150,7 @@ export class GreenhouseConnector extends BaseConnector {
  * `STRUCTURED_DATA` evidence. Fields Greenhouse does not publish (salary,
  * employment type, seniority) are omitted rather than fabricated (Req 34.3).
  */
-export function mapGreenhouseJob(
-  job: GreenhouseJob,
-  rawArtifactId: string,
-): ParsedOpportunity {
+export function mapGreenhouseJob(job: GreenhouseJob, rawArtifactId: string): ParsedOpportunity {
   const parsed: ParsedOpportunity = {};
 
   const title = structuredEvidence(cleanString(job.title), rawArtifactId);

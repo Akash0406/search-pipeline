@@ -9,12 +9,7 @@
  *
  * There is NO password path anywhere (Req 5.5).
  */
-import type {
-  Clock,
-  CryptoProvider,
-  MagicLinkStore,
-  StoredMagicLink,
-} from './ports.js';
+import type { Clock, CryptoProvider, MagicLinkStore, StoredMagicLink } from './ports.js';
 
 /** Hard upper bound on magic-link validity mandated by Req 5.4. */
 export const MAGIC_LINK_MAX_TTL_MINUTES = 15;
@@ -41,8 +36,7 @@ export interface IssuedMagicLink {
 export type MagicLinkFailure = 'not_found' | 'expired' | 'used';
 
 export type MagicLinkVerifyResult =
-  | { ok: true; record: StoredMagicLink }
-  | { ok: false; reason: MagicLinkFailure };
+  { ok: true; record: StoredMagicLink } | { ok: false; reason: MagicLinkFailure };
 
 const MS_PER_MINUTE = 60 * 1000;
 

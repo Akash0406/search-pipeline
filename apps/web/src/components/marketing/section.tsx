@@ -25,11 +25,7 @@ export function Section({
   ariaLabelledby?: string;
 }) {
   return (
-    <section
-      id={id}
-      aria-labelledby={ariaLabelledby}
-      className={cn('py-16 sm:py-24', className)}
-    >
+    <section id={id} aria-labelledby={ariaLabelledby} className={cn('py-16 sm:py-24', className)}>
       {children}
     </section>
   );

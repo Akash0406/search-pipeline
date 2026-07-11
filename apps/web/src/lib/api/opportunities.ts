@@ -143,7 +143,10 @@ interface MutationContext {
  * success; `onMutate` patches caches immediately and rolls back on error so the
  * UI feels instant while staying correct (Req 43.1–43.3).
  */
-function useUserStateMutation(next: UserState, request: (id: string) => Promise<OpportunityUserStateResponse>) {
+function useUserStateMutation(
+  next: UserState,
+  request: (id: string) => Promise<OpportunityUserStateResponse>,
+) {
   const queryClient = useQueryClient();
   return useMutation<OpportunityUserStateResponse, unknown, string, MutationContext>({
     mutationFn: request,

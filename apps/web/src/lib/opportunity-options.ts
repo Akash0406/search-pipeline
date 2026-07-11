@@ -96,9 +96,7 @@ export const STATE_FILTER_OPTIONS = toOptions(STATE_FILTER_LABELS);
 export const FRESHNESS_OPTIONS = toOptions(FRESHNESS_LABELS);
 
 /** Source options excluding `gmail` (reserved for a future spec, never built). */
-export const SOURCE_TYPE_OPTIONS = (toOptions(SOURCE_TYPE_LABELS)).filter(
-  (o) => o.value !== 'gmail',
-);
+export const SOURCE_TYPE_OPTIONS = toOptions(SOURCE_TYPE_LABELS).filter((o) => o.value !== 'gmail');
 
 /**
  * Format a salary range using the source-provided currency/period, only when a

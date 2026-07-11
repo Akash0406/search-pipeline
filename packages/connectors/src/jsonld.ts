@@ -10,10 +10,7 @@
 
 import { parse as parseHtml } from 'node-html-parser';
 
-import {
-  structuredEvidence,
-  structuredList,
-} from './evidence.js';
+import { structuredEvidence, structuredList } from './evidence.js';
 import type { EvidenceValue, ParsedOpportunity, ParsedSalary } from './types.js';
 import { cleanString, safeJsonParse, toIsoDate } from './util.js';
 
@@ -65,10 +62,7 @@ export function isJobPosting(node: JsonLdNode): boolean {
 }
 
 /** Derive a stable external id for a JobPosting node. */
-export function jobPostingExternalId(
-  node: JsonLdNode,
-  fallbackUrl: string,
-): string {
+export function jobPostingExternalId(node: JsonLdNode, fallbackUrl: string): string {
   const identifier = extractIdentifier(node);
   if (identifier) return identifier;
   const url = cleanString(node['url']) ?? cleanString(fallbackUrl);
@@ -207,10 +201,7 @@ function extractStringList(value: unknown): string[] {
  * Every populated field carries `STRUCTURED_DATA` evidence; fields absent from
  * the node are omitted (never fabricated — Req 34.3/34.4).
  */
-export function mapJsonLdJobPosting(
-  node: JsonLdNode,
-  rawArtifactId: string,
-): ParsedOpportunity {
+export function mapJsonLdJobPosting(node: JsonLdNode, rawArtifactId: string): ParsedOpportunity {
   const parsed: ParsedOpportunity = {};
 
   const title = structuredEvidence(cleanString(node['title']), rawArtifactId);
@@ -222,16 +213,10 @@ export function mapJsonLdJobPosting(
   const locations = structuredList(extractLocations(node), rawArtifactId);
   if (locations) parsed.locations = locations;
 
-  const workArrangement = structuredEvidence(
-    extractWorkArrangement(node),
-    rawArtifactId,
-  );
+  const workArrangement = structuredEvidence(extractWorkArrangement(node), rawArtifactId);
   if (workArrangement) parsed.workArrangement = workArrangement;
 
-  const employmentType = structuredEvidence(
-    extractEmploymentType(node),
-    rawArtifactId,
-  );
+  const employmentType = structuredEvidence(extractEmploymentType(node), rawArtifactId);
   if (employmentType) parsed.employmentType = employmentType;
 
   const postedAt = structuredEvidence(toIsoDate(node['datePosted']), rawArtifactId);
@@ -240,10 +225,7 @@ export function mapJsonLdJobPosting(
   const closesAt = structuredEvidence(toIsoDate(node['validThrough']), rawArtifactId);
   if (closesAt) parsed.closesAt = closesAt;
 
-  const descriptionHtml = structuredEvidence(
-    cleanString(node['description']),
-    rawArtifactId,
-  );
+  const descriptionHtml = structuredEvidence(cleanString(node['description']), rawArtifactId);
   if (descriptionHtml) parsed.descriptionHtml = descriptionHtml;
 
   const url = cleanString(node['url']);

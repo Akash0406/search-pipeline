@@ -10,11 +10,7 @@
  */
 
 import { BaseConnector, optionalStringConfig } from '../base-connector.js';
-import {
-  DEFAULT_FETCH_BOUNDS,
-  JSONLD_CONTENT_TYPES,
-  buildFetchOptions,
-} from '../fetch-options.js';
+import { DEFAULT_FETCH_BOUNDS, JSONLD_CONTENT_TYPES, buildFetchOptions } from '../fetch-options.js';
 import {
   extractJsonLdJobPostings,
   isJobPosting,
@@ -55,10 +51,7 @@ export class JsonLdConnector extends BaseConnector {
   readonly sourceType: SourceType = 'jsonld';
   readonly isFirstParty = true;
 
-  async *discover(
-    ctx: ConnectorContext,
-    checkpoint: Checkpoint,
-  ): AsyncIterable<DiscoveryRef> {
+  async *discover(ctx: ConnectorContext, checkpoint: Checkpoint): AsyncIterable<DiscoveryRef> {
     const url = pageUrl(ctx);
     const options = buildFetchOptions({
       ctx,
@@ -115,17 +108,12 @@ export class JsonLdConnector extends BaseConnector {
     if (result.notModified) return result;
 
     const nodes = extractJsonLdJobPostings(bodyText(result));
-    const node =
-      nodes.find((n) => jobPostingExternalId(n, url) === ref.externalId) ??
-      nodes[0];
+    const node = nodes.find((n) => jobPostingExternalId(n, url) === ref.externalId) ?? nodes[0];
     // Narrow to a single JSON-LD node so parse maps exactly one posting.
     return node ? syntheticJsonArtifact(node, result) : result;
   }
 
-  async parse(
-    ctx: ConnectorContext,
-    artifact: FetchResult,
-  ): Promise<ParsedOpportunity> {
+  async parse(ctx: ConnectorContext, artifact: FetchResult): Promise<ParsedOpportunity> {
     const rawArtifactId = resolveRawArtifactId(ctx, artifact);
     const node = resolveNode(artifact);
     // No valid JobPosting → empty ParsedOpportunity (zero opportunity data).

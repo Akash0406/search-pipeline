@@ -124,11 +124,12 @@ async function assembleBundle(
       value: l.value,
       isPrimary: l.isPrimary,
     })),
-    preferences: byProfile(preferences, profile.id).map((pref) => ({
-      workArrangements: pref.workArrangements,
-      employmentTypes: pref.employmentTypes,
-      seniorityLevels: pref.seniorityLevels,
-    }))[0] ?? null,
+    preferences:
+      byProfile(preferences, profile.id).map((pref) => ({
+        workArrangements: pref.workArrangements,
+        employmentTypes: pref.employmentTypes,
+        seniorityLevels: pref.seniorityLevels,
+      }))[0] ?? null,
   }));
 
   // Saved / dismissed states (Req 43), owner-scoped.

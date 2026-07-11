@@ -28,9 +28,7 @@ export function isAbsent(value: unknown): boolean {
 export function toSourceText(value: unknown): string {
   const raw = typeof value === 'string' ? value : JSON.stringify(value);
   const text = (raw ?? '').trim();
-  return text.length > MAX_SOURCE_TEXT
-    ? `${text.slice(0, MAX_SOURCE_TEXT)}\u2026`
-    : text;
+  return text.length > MAX_SOURCE_TEXT ? `${text.slice(0, MAX_SOURCE_TEXT)}\u2026` : text;
 }
 
 /** Options shared by the evidence builders. */

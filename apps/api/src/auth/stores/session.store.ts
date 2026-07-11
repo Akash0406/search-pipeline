@@ -10,11 +10,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, gt, isNull, ne } from 'drizzle-orm';
 import type { Database } from '@careerstack/database';
 import { sessions } from '@careerstack/database';
-import type {
-  CreateSessionInput,
-  SessionStore,
-  StoredSession,
-} from '@careerstack/auth';
+import type { CreateSessionInput, SessionStore, StoredSession } from '@careerstack/auth';
 import { DB } from '../../common/di-tokens.js';
 
 @Injectable()
@@ -61,11 +57,7 @@ export class DrizzleSessionStore implements SessionStore {
       .select()
       .from(sessions)
       .where(
-        and(
-          eq(sessions.userId, userId),
-          isNull(sessions.revokedAt),
-          gt(sessions.expiresAt, now),
-        ),
+        and(eq(sessions.userId, userId), isNull(sessions.revokedAt), gt(sessions.expiresAt, now)),
       );
     return rows as StoredSession[];
   }
@@ -87,9 +79,7 @@ export class DrizzleSessionStore implements SessionStore {
     const rows = await this.db
       .update(sessions)
       .set({ revokedAt: at })
-      .where(
-        and(eq(sessions.userId, userId), ne(sessions.id, keepId), isNull(sessions.revokedAt)),
-      )
+      .where(and(eq(sessions.userId, userId), ne(sessions.id, keepId), isNull(sessions.revokedAt)))
       .returning({ id: sessions.id });
     return rows.length;
   }

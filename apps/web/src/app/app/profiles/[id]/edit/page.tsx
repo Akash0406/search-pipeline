@@ -10,11 +10,7 @@ export const metadata: Metadata = {
  * Edit a role profile (Req 19.1). Ownership is enforced server-side; a foreign
  * or missing id surfaces as a not-found state (Req 19.4).
  */
-export default async function EditProfilePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function EditProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   return (

@@ -74,10 +74,7 @@ export abstract class OwnershipScopedRepository<TTable extends PgTable> {
    * Fetch a single row by id, but ONLY if owned by `ownerId`.
    * Returns `null` for a missing row or a row owned by someone else.
    */
-  async findByIdForOwner(
-    id: string,
-    ownerId: string,
-  ): Promise<InferSelectModel<TTable> | null> {
+  async findByIdForOwner(id: string, ownerId: string): Promise<InferSelectModel<TTable> | null> {
     const rows = await this.db
       .select()
       .from(this.table as PgTable)

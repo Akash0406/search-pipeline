@@ -8,17 +8,9 @@
  *  - detail: https://api.lever.co/v0/postings/{slug}/{id}?mode=json
  */
 
-import {
-  BaseConnector,
-  optionalStringConfig,
-  requireStringConfig,
-} from '../base-connector.js';
+import { BaseConnector, optionalStringConfig, requireStringConfig } from '../base-connector.js';
 import { structuredEvidence, structuredList } from '../evidence.js';
-import {
-  DEFAULT_FETCH_BOUNDS,
-  JSON_CONTENT_TYPES,
-  buildFetchOptions,
-} from '../fetch-options.js';
+import { DEFAULT_FETCH_BOUNDS, JSON_CONTENT_TYPES, buildFetchOptions } from '../fetch-options.js';
 import type {
   Checkpoint,
   ConnectorContext,
@@ -71,10 +63,7 @@ export class LeverConnector extends BaseConnector {
     return `${BASE_URL}/${encodeURIComponent(slug)}/${encodeURIComponent(id)}?mode=json`;
   }
 
-  async *discover(
-    ctx: ConnectorContext,
-    checkpoint: Checkpoint,
-  ): AsyncIterable<DiscoveryRef> {
+  async *discover(ctx: ConnectorContext, checkpoint: Checkpoint): AsyncIterable<DiscoveryRef> {
     const slug = requireStringConfig(ctx, 'slug');
     const url = this.listUrl(slug);
     const options = buildFetchOptions({
@@ -126,10 +115,7 @@ export class LeverConnector extends BaseConnector {
     return ctx.fetcher.fetch(ref.url, options);
   }
 
-  async parse(
-    ctx: ConnectorContext,
-    artifact: FetchResult,
-  ): Promise<ParsedOpportunity> {
+  async parse(ctx: ConnectorContext, artifact: FetchResult): Promise<ParsedOpportunity> {
     const rawArtifactId = resolveRawArtifactId(ctx, artifact);
     // The detail endpoint may return the single posting or a single-element
     // array depending on the request; normalise to one object.
@@ -166,10 +152,7 @@ export class LeverConnector extends BaseConnector {
  * Pure mapper: Lever posting JSON → {@link ParsedOpportunity} with
  * `STRUCTURED_DATA` evidence. Absent fields are omitted (Req 34.3).
  */
-export function mapLeverPosting(
-  posting: LeverPosting,
-  rawArtifactId: string,
-): ParsedOpportunity {
+export function mapLeverPosting(posting: LeverPosting, rawArtifactId: string): ParsedOpportunity {
   const parsed: ParsedOpportunity = {};
   const categories = posting.categories ?? {};
 
@@ -183,16 +166,10 @@ export function mapLeverPosting(
   const locations = structuredList(locationValues, rawArtifactId);
   if (locations) parsed.locations = locations;
 
-  const workArrangement = structuredEvidence(
-    cleanString(posting.workplaceType),
-    rawArtifactId,
-  );
+  const workArrangement = structuredEvidence(cleanString(posting.workplaceType), rawArtifactId);
   if (workArrangement) parsed.workArrangement = workArrangement;
 
-  const employmentType = structuredEvidence(
-    cleanString(categories.commitment),
-    rawArtifactId,
-  );
+  const employmentType = structuredEvidence(cleanString(categories.commitment), rawArtifactId);
   if (employmentType) parsed.employmentType = employmentType;
 
   const postedAt = structuredEvidence(toIsoDate(posting.createdAt), rawArtifactId);
@@ -208,10 +185,7 @@ export function mapLeverPosting(
   );
   if (applyUrl) parsed.applyUrl = applyUrl;
 
-  const canonicalUrlHint = structuredEvidence(
-    cleanString(posting.hostedUrl),
-    rawArtifactId,
-  );
+  const canonicalUrlHint = structuredEvidence(cleanString(posting.hostedUrl), rawArtifactId);
   if (canonicalUrlHint) parsed.canonicalUrlHint = canonicalUrlHint;
 
   return parsed;

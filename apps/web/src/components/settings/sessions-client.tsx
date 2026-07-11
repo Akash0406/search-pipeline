@@ -29,19 +29,26 @@ import { DateTime } from '@/components/common/date-time';
 function deviceLabel(userAgent?: string): string {
   if (!userAgent) return 'Unknown device';
   const ua = userAgent;
-  const browser =
-    /edg/i.test(ua) ? 'Edge'
-    : /chrome|crios/i.test(ua) ? 'Chrome'
-    : /firefox|fxios/i.test(ua) ? 'Firefox'
-    : /safari/i.test(ua) ? 'Safari'
-    : 'Browser';
-  const os =
-    /windows/i.test(ua) ? 'Windows'
-    : /mac os|macintosh/i.test(ua) ? 'macOS'
-    : /android/i.test(ua) ? 'Android'
-    : /iphone|ipad|ios/i.test(ua) ? 'iOS'
-    : /linux/i.test(ua) ? 'Linux'
-    : 'Unknown OS';
+  const browser = /edg/i.test(ua)
+    ? 'Edge'
+    : /chrome|crios/i.test(ua)
+      ? 'Chrome'
+      : /firefox|fxios/i.test(ua)
+        ? 'Firefox'
+        : /safari/i.test(ua)
+          ? 'Safari'
+          : 'Browser';
+  const os = /windows/i.test(ua)
+    ? 'Windows'
+    : /mac os|macintosh/i.test(ua)
+      ? 'macOS'
+      : /android/i.test(ua)
+        ? 'Android'
+        : /iphone|ipad|ios/i.test(ua)
+          ? 'iOS'
+          : /linux/i.test(ua)
+            ? 'Linux'
+            : 'Unknown OS';
   return `${browser} · ${os}`;
 }
 
@@ -125,10 +132,7 @@ export function SessionsClient() {
           <>
             <ul className="divide-y rounded-lg border">
               {sessions.map((session) => (
-                <li
-                  key={session.id}
-                  className="flex items-center justify-between gap-3 px-3 py-3"
-                >
+                <li key={session.id} className="flex items-center justify-between gap-3 px-3 py-3">
                   <div className="min-w-0">
                     <p className="flex items-center gap-2 font-medium">
                       <Monitor className="size-4 text-muted-foreground" aria-hidden />

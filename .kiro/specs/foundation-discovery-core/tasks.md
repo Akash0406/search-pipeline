@@ -12,38 +12,38 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
 
 ## Correctness Properties (numbering used by PBT tasks below)
 
-| # | Property | Validates |
-|---|---|---|
-| P1 | Canonical URL normalization is idempotent and deterministic (tracking params stripped, scheme/host case normalized) | Req 36.1 |
-| P2 | Deduplication is idempotent (re-running over a resolved set changes nothing) | Req 36 |
-| P3 | Deduplication is order-independent (permuting inputs yields the same grouping) | Req 36.2 |
-| P4 | Fuzzy matches below `mergeThreshold` are never auto-merged; they route to review | Req 36.3 |
-| P5 | When a group mixes first-party and aggregator sources, canonical fields come from the first-party source | Req 36.4 |
-| P6 | Exact-identity: same `(source_type, external_id)` always resolves to one opportunity | Req 36.1 |
-| P7 | Normalized-fingerprint hash is deterministic for identical normalized inputs | Req 36.1 |
-| P8 | SSRF guard rejects private/loopback/link-local/unique-local/reserved/metadata IPs and re-validates every redirect target | Req 30.1, 30.2, 30.3 |
-| P9 | SafeFetcher aborts when a response exceeds `maxBytes` | Req 31.4 |
-| P10 | SafeFetcher aborts when the request exceeds `timeoutMs` | Req 31.5 |
-| P11 | SafeFetcher never follows more than `maxRedirects` | Req 31.3 |
-| P12 | SafeFetcher rejects content-types outside the allowed set | Req 31.6 |
-| P13 | Domain deny-list beats allow-list; denied domains are rejected | Req 31.7 |
-| P14 | Per-domain rate limit is never exceeded (over-budget requests deferred, not dropped) | Req 27.1, 27.2 |
-| P15 | Conditional fetch: a 304 yields `notModified` and the pipeline skips re-download/re-parse | Req 26.3 |
-| P16 | Normalization never fabricates absent facts (salary/work-rights/requirements/closing) → omitted or `uncertain` | Req 34.3, 34.4 |
-| P17 | Normalization output always conforms to the canonical schema (valid → passes; invalid → review) | Req 33.1 |
-| P18 | Every populated canonical fact carries exactly one evidence record with a valid extraction method | Req 34.1, 34.2 |
-| P19 | Explorer filter correctness: every returned opportunity satisfies all active filters | Req 41.5 |
-| P20 | Explorer sort correctness: result ordering is monotonic in the selected sort key | Req 42.2 |
-| P21 | Explorer list projection never includes `description` | Req 40.3, 58.3 |
-| P22 | URL-state round-trip: `decode(encode(s)) == s`; encoded state contains only filter/sort params | Req 44.1, 44.2, 44.3 |
-| P23 | Ownership isolation: a user can never read or modify another user's resource | Req 54.1, 54.2, 10.5, 43.4 |
-| P24 | One-active-profile invariant: a user has exactly one active profile after any profile operation | Req 10.2, 10.3, 10.4 |
-| P25 | Save/dismiss reversibility: reversing returns to `none`; state is per-user | Req 43.3, 43.4 |
-| P26 | Status vocabulary: any displayed status is a member of the fixed label set | Req 46.1, 46.2 |
-| P27 | Connector-failure isolation: one connector throwing never terminates the worker or other connectors; ingested opportunities stay accessible | Req 55.1, 55.2, 20.4 |
-| P28 | Retention: artifacts past the window are removed/anonymized while canonical opportunities remain accessible | Req 53.2, 53.3 |
-| P29 | No third-party password is ever stored/accepted; magic links are stored hashed, single-use, and expire ≤ 15 min | Req 28.1, 4.5, 5.3, 5.4 |
-| P30 | Export completeness: an export contains every category of the user's own data | Req 49.1 |
+| #   | Property                                                                                                                                    | Validates                  |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| P1  | Canonical URL normalization is idempotent and deterministic (tracking params stripped, scheme/host case normalized)                         | Req 36.1                   |
+| P2  | Deduplication is idempotent (re-running over a resolved set changes nothing)                                                                | Req 36                     |
+| P3  | Deduplication is order-independent (permuting inputs yields the same grouping)                                                              | Req 36.2                   |
+| P4  | Fuzzy matches below `mergeThreshold` are never auto-merged; they route to review                                                            | Req 36.3                   |
+| P5  | When a group mixes first-party and aggregator sources, canonical fields come from the first-party source                                    | Req 36.4                   |
+| P6  | Exact-identity: same `(source_type, external_id)` always resolves to one opportunity                                                        | Req 36.1                   |
+| P7  | Normalized-fingerprint hash is deterministic for identical normalized inputs                                                                | Req 36.1                   |
+| P8  | SSRF guard rejects private/loopback/link-local/unique-local/reserved/metadata IPs and re-validates every redirect target                    | Req 30.1, 30.2, 30.3       |
+| P9  | SafeFetcher aborts when a response exceeds `maxBytes`                                                                                       | Req 31.4                   |
+| P10 | SafeFetcher aborts when the request exceeds `timeoutMs`                                                                                     | Req 31.5                   |
+| P11 | SafeFetcher never follows more than `maxRedirects`                                                                                          | Req 31.3                   |
+| P12 | SafeFetcher rejects content-types outside the allowed set                                                                                   | Req 31.6                   |
+| P13 | Domain deny-list beats allow-list; denied domains are rejected                                                                              | Req 31.7                   |
+| P14 | Per-domain rate limit is never exceeded (over-budget requests deferred, not dropped)                                                        | Req 27.1, 27.2             |
+| P15 | Conditional fetch: a 304 yields `notModified` and the pipeline skips re-download/re-parse                                                   | Req 26.3                   |
+| P16 | Normalization never fabricates absent facts (salary/work-rights/requirements/closing) → omitted or `uncertain`                              | Req 34.3, 34.4             |
+| P17 | Normalization output always conforms to the canonical schema (valid → passes; invalid → review)                                             | Req 33.1                   |
+| P18 | Every populated canonical fact carries exactly one evidence record with a valid extraction method                                           | Req 34.1, 34.2             |
+| P19 | Explorer filter correctness: every returned opportunity satisfies all active filters                                                        | Req 41.5                   |
+| P20 | Explorer sort correctness: result ordering is monotonic in the selected sort key                                                            | Req 42.2                   |
+| P21 | Explorer list projection never includes `description`                                                                                       | Req 40.3, 58.3             |
+| P22 | URL-state round-trip: `decode(encode(s)) == s`; encoded state contains only filter/sort params                                              | Req 44.1, 44.2, 44.3       |
+| P23 | Ownership isolation: a user can never read or modify another user's resource                                                                | Req 54.1, 54.2, 10.5, 43.4 |
+| P24 | One-active-profile invariant: a user has exactly one active profile after any profile operation                                             | Req 10.2, 10.3, 10.4       |
+| P25 | Save/dismiss reversibility: reversing returns to `none`; state is per-user                                                                  | Req 43.3, 43.4             |
+| P26 | Status vocabulary: any displayed status is a member of the fixed label set                                                                  | Req 46.1, 46.2             |
+| P27 | Connector-failure isolation: one connector throwing never terminates the worker or other connectors; ingested opportunities stay accessible | Req 55.1, 55.2, 20.4       |
+| P28 | Retention: artifacts past the window are removed/anonymized while canonical opportunities remain accessible                                 | Req 53.2, 53.3             |
+| P29 | No third-party password is ever stored/accepted; magic links are stored hashed, single-use, and expire ≤ 15 min                             | Req 28.1, 4.5, 5.3, 5.4    |
+| P30 | Export completeness: an export contains every category of the user's own data                                                               | Req 49.1                   |
 
 ## Tasks
 
@@ -349,15 +349,15 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - List honors filters/sort/cursor with no description; detail returns sources + evidence; save/dismiss scoped per user (cross-user leakage denied)
     - _Requirements: 40.3, 43.4, 45.2_
 
-- [~] 12. Checkpoint — ingestion pipeline and explorer
+- [x] 12. Checkpoint — ingestion pipeline and explorer
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 13. Slice 9 — Admin connector-health + review queue
+- [x] 13. Slice 9 — Admin connector-health + review queue
   - [x] 13.1 Implement AdminModule endpoints
     - `GET /admin/connector-health`, `GET /admin/runs`, `GET /admin/parser-failures`, `GET /admin/review-queue`; admin-guarded; access audited
     - _Requirements: 47.1, 47.2, 47.3, 48.1, 48.2, 48.3_
     - _Design: API §7 (admin routes)_
-  - [~] 13.2 Build admin connector-health UI
+  - [x] 13.2 Build admin connector-health UI
     - `/admin/connector-health`: per-connection health, recent runs with counts/failure reasons, parser failures, and the review queue
     - _Requirements: 47.1, 47.2, 48.1, 48.2_
     - _Design: Frontend §8 (/admin/connector-health)_
@@ -365,7 +365,7 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - Non-admin denied (403) on every admin route; admin access writes an audit event
     - _Requirements: 47.3, 48.3_
 
-- [ ] 14. Slice 10 — Privacy: export, delete, disconnect, retention surface
+- [x] 14. Slice 10 — Privacy: export, delete, disconnect, retention surface
   - [x] 14.1 Implement PrivacyModule endpoints
     - `POST /privacy/export` + `GET /privacy/export/{id}` (async + status), `POST /privacy/delete-data` (confirm-gated), `POST /connections/{id}/disconnect` (revoke OAuth, stop scheduling, keep opportunities), retention-policy surface
     - _Requirements: 49.1, 49.2, 49.3, 50.2, 51.1, 51.2, 51.3, 53.1, 56.1_
@@ -373,7 +373,7 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
   - [x] 14.2 Implement export worker job
     - Assemble the user's personal data, role profiles, saved/dismissed states, and connection configuration into an export; deliver via signed URL to the owner only
     - _Requirements: 49.1, 49.2_
-  - [~] 14.3 Build privacy UI
+  - [x] 14.3 Build privacy UI
     - Export status, disconnect source, delete-data/account flows with explicit confirmation and live long-running status via SSE
     - _Requirements: 49.3, 50.2, 51.1, 56.1, 56.2_
     - _Design: Frontend §8 (/app/settings/privacy)_
@@ -398,7 +398,7 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
   - [x] 15.3 Implement PWA shell
     - Web app manifest + service worker offering an offline-fallback shell for the public surface
     - _Requirements: 2.5_
-  - [~] 15.4 Implement SSE `/events` + client invalidation
+  - [x] 15.4 Implement SSE `/events` + client invalidation
     - Server-Sent Events for run status, opportunity changes, and export status; TanStack Query invalidation on the client
     - _Requirements: 56.1, 56.2_
     - _Design: API §7 (Live /events), Frontend §8_
@@ -450,15 +450,69 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     { "id": 5, "tasks": ["2.7", "3.1"] },
     { "id": 6, "tasks": ["2.8", "3.2", "7.1", "7.2", "7.5"] },
     { "id": 7, "tasks": ["3.3", "3.4", "7.3", "7.4", "8.1"] },
-    { "id": 8, "tasks": ["4.1", "7.6", "7.7", "7.8", "7.9", "7.10", "7.11", "8.2", "8.3", "8.4", "8.5", "8.6"] },
+    {
+      "id": 8,
+      "tasks": [
+        "4.1",
+        "7.6",
+        "7.7",
+        "7.8",
+        "7.9",
+        "7.10",
+        "7.11",
+        "8.2",
+        "8.3",
+        "8.4",
+        "8.5",
+        "8.6"
+      ]
+    },
     { "id": 9, "tasks": ["4.2", "4.3", "4.4", "4.5", "4.6", "8.7", "8.8", "8.9"] },
     { "id": 10, "tasks": ["4.7", "4.8", "4.9", "4.10", "10.1", "10.2"] },
     { "id": 11, "tasks": ["6.1", "10.3", "10.4"] },
     { "id": 12, "tasks": ["6.2", "6.3", "10.5", "10.6"] },
     { "id": 13, "tasks": ["6.4", "6.5", "6.6", "10.7", "10.8", "10.9"] },
-    { "id": 14, "tasks": ["10.10", "10.11", "10.12", "10.13", "10.14", "10.15", "10.16", "10.17", "10.18", "10.19", "10.20", "10.21", "11.1", "11.2"] },
+    {
+      "id": 14,
+      "tasks": [
+        "10.10",
+        "10.11",
+        "10.12",
+        "10.13",
+        "10.14",
+        "10.15",
+        "10.16",
+        "10.17",
+        "10.18",
+        "10.19",
+        "10.20",
+        "10.21",
+        "11.1",
+        "11.2"
+      ]
+    },
     { "id": 15, "tasks": ["11.3", "11.4", "11.5", "11.6", "13.1", "14.1", "14.2"] },
-    { "id": 16, "tasks": ["11.7", "11.8", "11.9", "11.10", "11.11", "11.12", "13.2", "13.3", "14.3", "14.4", "14.5", "14.6", "15.1", "15.2", "15.3", "15.4"] },
+    {
+      "id": 16,
+      "tasks": [
+        "11.7",
+        "11.8",
+        "11.9",
+        "11.10",
+        "11.11",
+        "11.12",
+        "13.2",
+        "13.3",
+        "14.3",
+        "14.4",
+        "14.5",
+        "14.6",
+        "15.1",
+        "15.2",
+        "15.3",
+        "15.4"
+      ]
+    },
     { "id": 17, "tasks": ["15.5", "16.1", "16.2"] },
     { "id": 18, "tasks": ["16.3", "16.4", "16.5"] }
   ]

@@ -77,7 +77,13 @@ function DetailSkeleton() {
   );
 }
 
-function DetailContent({ opportunity, timezone }: { opportunity: OpportunityDetail; timezone?: string }) {
+function DetailContent({
+  opportunity,
+  timezone,
+}: {
+  opportunity: OpportunityDetail;
+  timezone?: string;
+}) {
   const salary = formatSalary(opportunity.salary);
   // Spread-only prop so we never pass `timezone: undefined` (exactOptionalPropertyTypes).
   const tz = timezone ? { timezone } : {};
@@ -218,9 +224,7 @@ function DetailContent({ opportunity, timezone }: { opportunity: OpportunityDeta
                 {opportunity.employmentType ? (
                   <Fact icon={Briefcase} label="Employment type">
                     {EMPLOYMENT_TYPE_LABELS[opportunity.employmentType]}
-                    {opportunity.seniority
-                      ? ` · ${SENIORITY_LABELS[opportunity.seniority]}`
-                      : ''}
+                    {opportunity.seniority ? ` · ${SENIORITY_LABELS[opportunity.seniority]}` : ''}
                   </Fact>
                 ) : null}
                 {salary ? (
@@ -305,5 +309,10 @@ export function OpportunityDetailView({ id }: { id: string }) {
 
   if (!query.data) return null;
 
-  return <DetailContent opportunity={query.data} {...(me.data?.timezone ? { timezone: me.data.timezone } : {})} />;
+  return (
+    <DetailContent
+      opportunity={query.data}
+      {...(me.data?.timezone ? { timezone: me.data.timezone } : {})}
+    />
+  );
 }

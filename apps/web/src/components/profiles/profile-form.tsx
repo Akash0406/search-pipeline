@@ -182,9 +182,7 @@ export function ProfileForm({ profile }: { profile?: RoleProfileDetail }) {
       router.refresh();
     } catch (err) {
       const message =
-        err instanceof ApiError
-          ? err.message
-          : 'We couldn’t save your profile. Please try again.';
+        err instanceof ApiError ? err.message : 'We couldn’t save your profile. Please try again.';
       setFormError(message);
       toast.error(message);
     }

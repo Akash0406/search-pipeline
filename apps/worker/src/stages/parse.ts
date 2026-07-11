@@ -24,10 +24,7 @@ import type { ParseJobData } from '../queues.js';
 import { incrementRunCounter } from '../runs.js';
 
 /** Rebuild a transport FetchResult from a stored artifact + its body. */
-function toFetchResult(
-  row: typeof schema.rawArtifacts.$inferSelect,
-  body: Buffer,
-): FetchResult {
+function toFetchResult(row: typeof schema.rawArtifacts.$inferSelect, body: Buffer): FetchResult {
   return {
     finalUrl: row.sourceUrl,
     status: row.httpStatus ?? 200,

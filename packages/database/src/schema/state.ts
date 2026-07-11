@@ -4,15 +4,7 @@
  * Requirements: 35.1, 43.4, 49.1.
  */
 import { relations, sql } from 'drizzle-orm';
-import {
-  boolean,
-  index,
-  jsonb,
-  pgTable,
-  primaryKey,
-  text,
-  uuid,
-} from 'drizzle-orm/pg-core';
+import { boolean, index, jsonb, pgTable, primaryKey, text, uuid } from 'drizzle-orm/pg-core';
 import { createdAt, nullableTimestamp, primaryKeyId, updatedAt } from './_shared.js';
 import { users } from './identity.js';
 import { opportunities, opportunitySources } from './opportunities.js';
@@ -53,10 +45,9 @@ export const reviewQueueItems = pgTable(
     rawArtifactId: uuid('raw_artifact_id').references(() => rawArtifacts.id, {
       onDelete: 'set null',
     }),
-    opportunitySourceId: uuid('opportunity_source_id').references(
-      () => opportunitySources.id,
-      { onDelete: 'set null' },
-    ),
+    opportunitySourceId: uuid('opportunity_source_id').references(() => opportunitySources.id, {
+      onDelete: 'set null',
+    }),
     /** failure / adjudication reason (Req 35.3). */
     reason: text('reason'),
     /** 'open' | 'resolved'. */

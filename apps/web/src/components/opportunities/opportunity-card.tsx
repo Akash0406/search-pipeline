@@ -53,7 +53,9 @@ export function OpportunityCard({ item }: { item: OpportunityListItem }) {
           <p className="flex items-center gap-1.5">
             <MapPin className="size-3.5 shrink-0" aria-hidden />
             {locations}
-            {workArrangement ? <span className="text-foreground/70">· {workArrangement}</span> : null}
+            {workArrangement ? (
+              <span className="text-foreground/70">· {workArrangement}</span>
+            ) : null}
           </p>
         ) : null}
         {employmentType ? (

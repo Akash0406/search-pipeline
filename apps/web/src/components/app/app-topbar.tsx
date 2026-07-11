@@ -35,9 +35,7 @@ export function AppTopbar({ onOpenCommand }: { onOpenCommand: () => void }) {
       <Button
         variant="outline"
         onClick={onOpenCommand}
-        className={cn(
-          'ml-auto h-9 gap-2 text-muted-foreground md:ml-0 md:w-64 md:justify-start',
-        )}
+        className={cn('ml-auto h-9 gap-2 text-muted-foreground md:ml-0 md:w-64 md:justify-start')}
         aria-label="Open command palette"
       >
         <Search className="size-4" aria-hidden />

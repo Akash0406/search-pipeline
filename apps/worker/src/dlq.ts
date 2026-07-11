@@ -34,10 +34,7 @@ export class DeadLetterQueues {
 
   constructor(connection: ConnectionOptions) {
     for (const name of ALL_QUEUE_NAMES) {
-      this.byQueue.set(
-        name,
-        new Queue<DeadLetterPayload>(dlqNameFor(name), { connection }),
-      );
+      this.byQueue.set(name, new Queue<DeadLetterPayload>(dlqNameFor(name), { connection }));
     }
   }
 

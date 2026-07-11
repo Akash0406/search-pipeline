@@ -84,10 +84,7 @@ describe('network arbitraries', () => {
         if (net.isIPv4(ip) === false) return false;
         const parts = ip.split('.').map(Number) as [number, number, number, number];
         const [a, b] = parts;
-        const isPrivate =
-          a === 10 ||
-          (a === 172 && b >= 16 && b <= 31) ||
-          (a === 192 && b === 168);
+        const isPrivate = a === 10 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168);
         const isLoopback = a === 127;
         const isLinkLocal = a === 169 && b === 254;
         return !isPrivate && !isLoopback && !isLinkLocal;

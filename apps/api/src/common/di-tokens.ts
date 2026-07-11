@@ -9,3 +9,4 @@ export const CLOCK = Symbol('CLOCK');
 export const CRYPTO = Symbol('CRYPTO');
 export const SESSION_STORE = Symbol('SESSION_STORE');
 export const MAGIC_LINK_STORE = Symbol('MAGIC_LINK_STORE');
+export const IDEMPOTENCY_STORE = Symbol('IDEMPOTENCY_STORE');

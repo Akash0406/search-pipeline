@@ -125,7 +125,9 @@ export function canonicalizeUrl(input: string): string {
       params.push([key, value]);
     }
   }
-  params.sort((a, b) => (a[0] === b[0] ? (a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0) : a[0] < b[0] ? -1 : 1));
+  params.sort((a, b) =>
+    a[0] === b[0] ? (a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0) : a[0] < b[0] ? -1 : 1,
+  );
 
   const sortedSearch = new URLSearchParams(params).toString();
   const search = sortedSearch.length > 0 ? `?${sortedSearch}` : '';

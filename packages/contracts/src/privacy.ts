@@ -6,12 +6,7 @@
  */
 import { z } from 'zod';
 
-export const exportStatusSchema = z.enum([
-  'pending',
-  'processing',
-  'ready',
-  'failed',
-]);
+export const exportStatusSchema = z.enum(['pending', 'processing', 'ready', 'failed']);
 export type ExportStatus = z.infer<typeof exportStatusSchema>;
 
 /** `POST /privacy/export` — request an async export (Req 49). */

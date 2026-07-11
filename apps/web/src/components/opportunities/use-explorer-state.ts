@@ -26,10 +26,7 @@ export function useExplorerState() {
   // Decode from the live URL. `toString()` gives a stable dependency so the
   // memoized state only changes when the query string actually changes.
   const search = searchParams.toString();
-  const state = React.useMemo<ExplorerState>(
-    () => decodeExplorerState(search),
-    [search],
-  );
+  const state = React.useMemo<ExplorerState>(() => decodeExplorerState(search), [search]);
 
   const commit = React.useCallback(
     (next: ExplorerState) => {

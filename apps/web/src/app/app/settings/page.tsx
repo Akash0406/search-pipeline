@@ -1,13 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, SlidersHorizontal } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@careerstack/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@careerstack/ui';
 import { PageHeader } from '@/components/app/page-header';
 import { ThemeToggle } from '@/components/theme-toggle';
 
@@ -51,7 +45,10 @@ export default function SettingsPage() {
       <div className="grid gap-4 sm:grid-cols-2">
         {SECTIONS.map(({ href, icon: Icon, title, description }) => (
           <Card key={href} className="transition-shadow hover:shadow-md">
-            <Link href={href} className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <Link
+              href={href}
+              className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               <CardHeader>
                 <span className="mb-2 flex size-10 items-center justify-center rounded-lg bg-primary/12 text-primary">
                   <Icon className="size-5" aria-hidden />

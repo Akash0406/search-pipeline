@@ -38,9 +38,7 @@ import type { AuthenticatedUser } from '../common/request-context.js';
 import { RoleProfilesService, type DeleteRoleProfileResult } from './role-profiles.service.js';
 
 /** Optional pause body — the replacement active profile to activate first. */
-const pauseRequestSchema = z
-  .object({ activateProfileId: z.string().min(1).optional() })
-  .optional();
+const pauseRequestSchema = z.object({ activateProfileId: z.string().min(1).optional() }).optional();
 
 @Controller('role-profiles')
 export class RoleProfilesController {
@@ -80,7 +78,9 @@ export class RoleProfilesController {
   ): Promise<RoleProfileDetail> {
     const parsed = updateRoleProfileRequestSchema.safeParse(body);
     if (!parsed.success) {
-      throw new BadRequestException(parsed.error.issues[0]?.message ?? 'Invalid role profile update.');
+      throw new BadRequestException(
+        parsed.error.issues[0]?.message ?? 'Invalid role profile update.',
+      );
     }
     return this.profiles.update(user.id, id, parsed.data);
   }

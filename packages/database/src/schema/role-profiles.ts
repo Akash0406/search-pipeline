@@ -16,15 +16,7 @@
  * - `work_rights` is optional and PRIVATE (Req 16); null = unspecified.
  */
 import { relations } from 'drizzle-orm';
-import {
-  boolean,
-  index,
-  jsonb,
-  numeric,
-  pgTable,
-  text,
-  uuid,
-} from 'drizzle-orm/pg-core';
+import { boolean, index, jsonb, numeric, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { createdAt, primaryKeyId, updatedAt } from './_shared.js';
 import { users } from './identity.js';
 
@@ -143,12 +135,9 @@ export const roleProfileLocationsRelations = relations(roleProfileLocations, ({ 
   }),
 }));
 
-export const roleProfilePreferencesRelations = relations(
-  roleProfilePreferences,
-  ({ one }) => ({
-    roleProfile: one(roleProfiles, {
-      fields: [roleProfilePreferences.roleProfileId],
-      references: [roleProfiles.id],
-    }),
+export const roleProfilePreferencesRelations = relations(roleProfilePreferences, ({ one }) => ({
+  roleProfile: one(roleProfiles, {
+    fields: [roleProfilePreferences.roleProfileId],
+    references: [roleProfiles.id],
   }),
-);
+}));

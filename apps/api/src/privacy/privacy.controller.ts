@@ -100,9 +100,7 @@ export class PrivacyController {
   }
 
   @Get('retention')
-  async retentionPolicy(
-    @CurrentUser() user: AuthenticatedUser,
-  ): Promise<RetentionPolicyResponse> {
+  async retentionPolicy(@CurrentUser() user: AuthenticatedUser): Promise<RetentionPolicyResponse> {
     return this.retention.getPolicy(user.id);
   }
 }

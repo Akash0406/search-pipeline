@@ -33,9 +33,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const requestId = String(request.id ?? '');
 
     const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+      exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
     const code: ErrorCode = STATUS_TO_CODE[status] ?? 'INTERNAL';
 
     let message = 'An unexpected error occurred.';

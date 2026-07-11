@@ -103,7 +103,10 @@ function existingCandidate(
 async function gatherNeighborhood(
   tx: Tx,
   candidate: CanonicalCandidate,
-): Promise<{ sources: (typeof schema.opportunitySources.$inferSelect)[]; opps: Map<string, OpportunityRow> }> {
+): Promise<{
+  sources: (typeof schema.opportunitySources.$inferSelect)[];
+  opps: Map<string, OpportunityRow>;
+}> {
   const os = schema.opportunitySources;
   const identityClauses = [
     and(eq(os.sourceType, candidate.sourceType), eq(os.externalId, candidate.externalId)),
@@ -111,7 +114,10 @@ async function gatherNeighborhood(
   ];
   if (candidate.applyUrl) identityClauses.push(eq(os.applyUrl, candidate.applyUrl));
 
-  const bySource = await tx.select().from(os).where(or(...identityClauses));
+  const bySource = await tx
+    .select()
+    .from(os)
+    .where(or(...identityClauses));
 
   const byUrl = await tx
     .select({ id: schema.opportunities.id })

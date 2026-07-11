@@ -13,11 +13,7 @@ import { type Database, schema } from '@careerstack/database';
 
 /** Columns on `connector_runs` that hold incrementable counters. */
 export type RunCounter =
-  | 'itemsDiscovered'
-  | 'itemsFetched'
-  | 'itemsParsed'
-  | 'itemsPersisted'
-  | 'itemsFailed';
+  'itemsDiscovered' | 'itemsFetched' | 'itemsParsed' | 'itemsPersisted' | 'itemsFailed';
 
 const RUN_COLUMN: Record<RunCounter, AnyPgColumn> = {
   itemsDiscovered: schema.connectorRuns.itemsDiscovered,
@@ -105,10 +101,7 @@ export async function recordConnectionFailure(
 }
 
 /** Mark a connection healthy after a fully successful run. */
-export async function recordConnectionHealthy(
-  db: Database,
-  connectionId: string,
-): Promise<void> {
+export async function recordConnectionHealthy(db: Database, connectionId: string): Promise<void> {
   await db
     .update(schema.connections)
     .set({

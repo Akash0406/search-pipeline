@@ -67,10 +67,7 @@ export function canonicalContentHash(candidate: CanonicalCandidate): string {
  * names of the canonical fields that changed (Req 39.2). Only fields that map
  * onto a stored column are compared.
  */
-export function diffCanonicalFields(
-  previous: OpportunityRow,
-  next: CanonicalSnapshot,
-): string[] {
+export function diffCanonicalFields(previous: OpportunityRow, next: CanonicalSnapshot): string[] {
   const prev: Partial<Record<keyof CanonicalSnapshot, string>> = {
     title: previous.title,
     company: previous.company,

@@ -54,8 +54,8 @@ export default function TermsPage() {
 
             <h2>Changes</h2>
             <p>
-              We may update these terms as the product evolves. Material changes will be communicated
-              through the app.
+              We may update these terms as the product evolves. Material changes will be
+              communicated through the app.
             </p>
           </Prose>
         </Container>

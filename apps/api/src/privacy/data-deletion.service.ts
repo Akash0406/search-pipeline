@@ -42,9 +42,7 @@ export class DataDeletionService {
             await tx.delete(roleProfiles).where(eq(roleProfiles.userId, userId));
             break;
           case 'saved_dismissed':
-            await tx
-              .delete(opportunityUserState)
-              .where(eq(opportunityUserState.userId, userId));
+            await tx.delete(opportunityUserState).where(eq(opportunityUserState.userId, userId));
             break;
           case 'connections':
             await tx.delete(connections).where(eq(connections.userId, userId));

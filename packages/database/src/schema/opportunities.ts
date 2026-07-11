@@ -67,10 +67,9 @@ export const opportunities = pgTable(
     fingerprint: text('fingerprint'),
     /** of canonical content for change detection (Req 39). */
     contentHash: text('content_hash'),
-    duplicateGroupId: uuid('duplicate_group_id').references(
-      (): AnyPgColumn => duplicateGroups.id,
-      { onDelete: 'set null' },
-    ),
+    duplicateGroupId: uuid('duplicate_group_id').references((): AnyPgColumn => duplicateGroups.id, {
+      onDelete: 'set null',
+    }),
     // --- RESERVED, unused this slice (Req 33.3, 45.5) ---
     /** reserved for future match/analysis. NEVER written this slice. */
     matchFeatures: jsonb('match_features'),
@@ -237,10 +236,9 @@ export const contentRevisions = pgTable(
 /** Deduplication grouping (Req 36, 41.4). */
 export const duplicateGroups = pgTable('duplicate_groups', {
   id: primaryKeyId(),
-  canonicalOpportunityId: uuid('canonical_opportunity_id').references(
-    () => opportunities.id,
-    { onDelete: 'set null' },
-  ),
+  canonicalOpportunityId: uuid('canonical_opportunity_id').references(() => opportunities.id, {
+    onDelete: 'set null',
+  }),
   /** 'exact' | 'fingerprint' | 'fuzzy'. */
   strategy: text('strategy'),
   confidence: numeric('confidence'),
@@ -272,15 +270,12 @@ export const opportunityLocationsRelations = relations(opportunityLocations, ({ 
   }),
 }));
 
-export const opportunityRequirementsRelations = relations(
-  opportunityRequirements,
-  ({ one }) => ({
-    opportunity: one(opportunities, {
-      fields: [opportunityRequirements.opportunityId],
-      references: [opportunities.id],
-    }),
+export const opportunityRequirementsRelations = relations(opportunityRequirements, ({ one }) => ({
+  opportunity: one(opportunities, {
+    fields: [opportunityRequirements.opportunityId],
+    references: [opportunities.id],
   }),
-);
+}));
 
 export const opportunitySkillsRelations = relations(opportunitySkills, ({ one }) => ({
   opportunity: one(opportunities, {

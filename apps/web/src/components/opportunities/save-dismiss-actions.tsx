@@ -113,7 +113,11 @@ export function SaveDismissActions({
           title={isDismissed ? 'Dismissed' : 'Dismiss'}
           onClick={onDismissToggle}
         >
-          {isDismissed ? <Undo2 className="size-4" aria-hidden /> : <X className="size-4" aria-hidden />}
+          {isDismissed ? (
+            <Undo2 className="size-4" aria-hidden />
+          ) : (
+            <X className="size-4" aria-hidden />
+          )}
         </Button>
       </div>
     );
@@ -144,7 +148,11 @@ export function SaveDismissActions({
         aria-pressed={isDismissed}
         onClick={onDismissToggle}
       >
-        {isDismissed ? <Undo2 className="size-4" aria-hidden /> : <X className="size-4" aria-hidden />}
+        {isDismissed ? (
+          <Undo2 className="size-4" aria-hidden />
+        ) : (
+          <X className="size-4" aria-hidden />
+        )}
         {isDismissed ? 'Restore' : 'Dismiss'}
       </Button>
     </div>

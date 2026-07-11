@@ -15,7 +15,13 @@ export function BrandMark({
         aria-hidden
         className="inline-flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-sm"
       >
-        <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          viewBox="0 0 24 24"
+          className="size-4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <circle cx="12" cy="12" r="3" />
           <circle cx="12" cy="12" r="7" opacity="0.6" />
           <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round" opacity="0.9" />

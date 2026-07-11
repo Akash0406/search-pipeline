@@ -24,11 +24,7 @@
  * one group's `memberKeys`.
  */
 
-import {
-  companySimilarity,
-  locationProximity,
-  titleSimilarity,
-} from './similarity.js';
+import { companySimilarity, locationProximity, titleSimilarity } from './similarity.js';
 import type { DedupCandidate } from './types.js';
 
 /** Tunable thresholds + fuzzy weights (injected for testability). */
@@ -153,10 +149,7 @@ export function fuzzyConfidence(
 // --- Engine -----------------------------------------------------------------
 
 function identityTokens(c: DedupCandidate): string[] {
-  const tokens = [
-    `st:${c.sourceType}\u0001${c.externalId}`,
-    `url:${c.canonicalUrl}`,
-  ];
+  const tokens = [`st:${c.sourceType}\u0001${c.externalId}`, `url:${c.canonicalUrl}`];
   if (c.applyUrl) tokens.push(`apply:${c.applyUrl}`);
   if (c.atsBoard && c.atsPostingId) {
     tokens.push(`ats:${c.atsBoard}\u0001${c.atsPostingId}`);
@@ -274,13 +267,7 @@ export function deduplicate(
     review.push({ keys, confidence: pair.confidence, reason: 'uncertain_duplicate' });
   }
   review.sort((x, y) =>
-    x.keys[0] === y.keys[0]
-      ? x.keys[1] < y.keys[1]
-        ? -1
-        : 1
-      : x.keys[0] < y.keys[0]
-        ? -1
-        : 1,
+    x.keys[0] === y.keys[0] ? (x.keys[1] < y.keys[1] ? -1 : 1) : x.keys[0] < y.keys[0] ? -1 : 1,
   );
 
   // --- Assemble groups ------------------------------------------------------

@@ -4,30 +4,30 @@
 
 `foundation-discovery-core` is the foundational slice of CareerRadar AI (working app name **CareerStack**). It establishes the application shell and public surface, passwordless authentication and sessions, role profiles, pluggable source connectors, the opportunity ingestion/processing pipeline, a read-only opportunity explorer with detail views, a basic admin connector-health view, and privacy/data-control operations.
 
-This slice is deliberately the *substrate* for the whole platform. Later specs (matching engine, AI analysis, alerts, applications, documents, analytics) build on the canonical data model, ingestion pipeline, and browsing experience defined here. Accordingly, this design **reserves space** in the data model and UI for match/analysis without populating or displaying it (OPP-002.3, G6.5), and it treats several cross-cutting rules as non-negotiable **Hard_Blocker** invariants: never fabricate opportunity data (OPP-003.3), never store third-party platform passwords (SRC-009), never bypass access controls / cross-user isolation (PRIV-006).
+This slice is deliberately the _substrate_ for the whole platform. Later specs (matching engine, AI analysis, alerts, applications, documents, analytics) build on the canonical data model, ingestion pipeline, and browsing experience defined here. Accordingly, this design **reserves space** in the data model and UI for match/analysis without populating or displaying it (OPP-002.3, G6.5), and it treats several cross-cutting rules as non-negotiable **Hard_Blocker** invariants: never fabricate opportunity data (OPP-003.3), never store third-party platform passwords (SRC-009), never bypass access controls / cross-user isolation (PRIV-006).
 
 ### Requirement → capability map
 
-| Capability | Requirements | Delivered by |
-|---|---|---|
-| A — Application Foundation & Public Surface | A1–A3 (R1–R3) | `config` package (`brandName`), `apps/web` public routes + PWA, authenticated app shell |
-| B — Authentication & Sessions | B1–B6 (R4–R9) | `auth` package, `AuthModule`, `SessionModule`, `audit_logs` |
-| C — Role Profiles | C1–C10 (R10–R19) | `RoleProfilesModule`, `role_profiles` + child tables |
-| D — Source Connectors | D1–D10 (R20–R29) | `connectors` package, `ConnectorsModule`, `IngestionModule`, worker |
-| E — Connector & Crawler Security | E1–E2 (R30–R31) | `security` package (`SafeFetcher`, SSRF guard) |
-| F — Opportunity Processing | F1–F8 (R32–R39) | `IngestionModule`, normalization mapper, dedup engine, `opportunities` schema |
-| G — Opportunity Explorer & Details | G1–G7 (R40–R46) | `OpportunitiesModule`, `apps/web` explorer + detail |
-| H — Admin Connector-Health | H1–H2 (R47–R48) | `AdminModule`, `/admin` routes |
-| I — Privacy & Data Control | I1–I6 (R49–R54) | `PrivacyModule`, ownership guards/repositories |
-| J — Reliability & Graceful Degradation | J1–J2 (R55–R56) | Worker isolation, queues, status surfacing |
-| K — Accessibility | K1 (R57) | `apps/web` + `ui` package (shadcn/ui, focus management) |
-| L — Performance | L1 (R58) | List projections (no descriptions), indexes, pagination/virtualization |
+| Capability                                  | Requirements     | Delivered by                                                                            |
+| ------------------------------------------- | ---------------- | --------------------------------------------------------------------------------------- |
+| A — Application Foundation & Public Surface | A1–A3 (R1–R3)    | `config` package (`brandName`), `apps/web` public routes + PWA, authenticated app shell |
+| B — Authentication & Sessions               | B1–B6 (R4–R9)    | `auth` package, `AuthModule`, `SessionModule`, `audit_logs`                             |
+| C — Role Profiles                           | C1–C10 (R10–R19) | `RoleProfilesModule`, `role_profiles` + child tables                                    |
+| D — Source Connectors                       | D1–D10 (R20–R29) | `connectors` package, `ConnectorsModule`, `IngestionModule`, worker                     |
+| E — Connector & Crawler Security            | E1–E2 (R30–R31)  | `security` package (`SafeFetcher`, SSRF guard)                                          |
+| F — Opportunity Processing                  | F1–F8 (R32–R39)  | `IngestionModule`, normalization mapper, dedup engine, `opportunities` schema           |
+| G — Opportunity Explorer & Details          | G1–G7 (R40–R46)  | `OpportunitiesModule`, `apps/web` explorer + detail                                     |
+| H — Admin Connector-Health                  | H1–H2 (R47–R48)  | `AdminModule`, `/admin` routes                                                          |
+| I — Privacy & Data Control                  | I1–I6 (R49–R54)  | `PrivacyModule`, ownership guards/repositories                                          |
+| J — Reliability & Graceful Degradation      | J1–J2 (R55–R56)  | Worker isolation, queues, status surfacing                                              |
+| K — Accessibility                           | K1 (R57)         | `apps/web` + `ui` package (shadcn/ui, focus management)                                 |
+| L — Performance                             | L1 (R58)         | List projections (no descriptions), indexes, pagination/virtualization                  |
 
 ### Guiding principles
 
 - **Modular monolith with async workers.** API (`apps/api`) serves requests; ingestion runs in `apps/worker`. Both share domain logic through packages; domain logic is independent of controllers, decorators, and DB adapters so it stays unit-testable and reusable (SRC-001.2).
 - **Evidence-based correctness.** Every extracted fact carries `Evidence`. The system marks facts uncertain rather than fabricating them (OPP-003).
-- **Provenance is never lost.** Deduplication merges *representation* but retains every `Opportunity_Source` and its `Raw_Artifact` reference (OPP-006).
+- **Provenance is never lost.** Deduplication merges _representation_ but retains every `Opportunity_Source` and its `Raw_Artifact` reference (OPP-006).
 - **Idempotent, retryable, observable pipeline.** Every stage is keyed by content hash / dedup keys, is retryable with backoff, emits traces, and has a dead-letter queue (DLQ).
 
 ## Architecture
@@ -133,6 +133,7 @@ Every stage is **idempotent** (keyed by `content_hash` and dedup keys), **retrya
 ## Components and Interfaces
 
 > **Canonical type conventions (single source of truth).** To eliminate the earlier drift between two type passes, this design fixes ONE convention:
+>
 > - `SourceType` is a **string-literal union with lowercase values** (`'greenhouse' | 'lever' | 'ashby' | 'jsonld' | 'manual_url'`, plus reserved `'gmail'`). The Postgres `source_type` enum uses **the same lowercase values**, so app types and DB enums are identical.
 > - `ExtractionMethod` uses the **uppercase** values mandated by the glossary/OPP-003 (`STRUCTURED_DATA | RULE | PARSER | LLM | USER`).
 > - The connector exposes a **single** interface (`OpportunityConnector`) with `discover()` returning an `AsyncIterable<DiscoveryRef>` (streaming pagination). There is exactly one `ParsedOpportunity` shape (evidence-wrapped fields) and one application-layer `Opportunity`/`Evidence` shape (below).
@@ -147,9 +148,9 @@ export type SourceType =
   | 'greenhouse'
   | 'lever'
   | 'ashby'
-  | 'jsonld'        // generic schema.org JobPosting career page
-  | 'manual_url'    // user-submitted single URL (SRC-004)
-  | 'gmail';        // RESERVED: future spec, never implemented in this slice
+  | 'jsonld' // generic schema.org JobPosting career page
+  | 'manual_url' // user-submitted single URL (SRC-004)
+  | 'gmail'; // RESERVED: future spec, never implemented in this slice
 // Extension points (future specs): 'sitemap' | 'rss' | 'browser_capture' | 'aggregator_*'
 
 export type ExtractionMethod = 'STRUCTURED_DATA' | 'RULE' | 'PARSER' | 'LLM' | 'USER';
@@ -157,21 +158,21 @@ export type ExtractionMethod = 'STRUCTURED_DATA' | 'RULE' | 'PARSER' | 'LLM' | '
 /** A reference discovered on a source, before fetch. */
 export interface DiscoveryRef {
   sourceType: SourceType;
-  externalId: string;          // stable id within the source (e.g., ATS posting id) — exact-identity dedup + idempotency
-  url: string;                 // absolute URL to fetch
-  dedupKey: string;            // stable key so re-discovery does not re-enqueue duplicates
-  discoveredAt: string;        // ISO-8601
+  externalId: string; // stable id within the source (e.g., ATS posting id) — exact-identity dedup + idempotency
+  url: string; // absolute URL to fetch
+  dedupKey: string; // stable key so re-discovery does not re-enqueue duplicates
+  discoveredAt: string; // ISO-8601
   hints?: Record<string, string>; // e.g., updated_at, board token, apply-url hint
 }
 
 /** Transport-level result of a single fetch (distinct from the persisted RawArtifact entity). */
 export interface FetchResult {
-  finalUrl: string;            // URL after redirects
-  status: number;              // 200 or 304
-  notModified: boolean;        // true when a conditional GET short-circuits (SRC-007.3)
+  finalUrl: string; // URL after redirects
+  status: number; // 200 or 304
+  notModified: boolean; // true when a conditional GET short-circuits (SRC-007.3)
   headers: Record<string, string>; // includes ETag / Last-Modified
   contentType: string;
-  body: Buffer;                // capped at maxBytes (empty when notModified)
+  body: Buffer; // capped at maxBytes (empty when notModified)
   byteSize: number;
   etag?: string;
   lastModified?: string;
@@ -181,12 +182,12 @@ export interface FetchResult {
 export interface EvidenceValue<T> {
   value: T;
   evidence: {
-    rawArtifactId: string;     // OPP-003.1
-    sourceText: string;        // exact snippet the value came from
-    method: ExtractionMethod;  // OPP-003.2
-    confidence: number;        // 0..1
+    rawArtifactId: string; // OPP-003.1
+    sourceText: string; // exact snippet the value came from
+    method: ExtractionMethod; // OPP-003.2
+    confidence: number; // 0..1
   };
-  uncertain?: boolean;         // true when the fact could not be determined (OPP-003.4)
+  uncertain?: boolean; // true when the fact could not be determined (OPP-003.4)
 }
 
 /** Parsed opportunity BEFORE normalization. Every field is optional + evidence-wrapped;
@@ -210,23 +211,23 @@ export interface ParsedOpportunity {
 }
 
 export interface Checkpoint {
-  cursor?: string;                       // pagination position / last successful state (SRC-007.1)
-  etags?: Record<string, string>;        // per-url ETag for conditional GET (SRC-007.3)
+  cursor?: string; // pagination position / last successful state (SRC-007.1)
+  etags?: Record<string, string>; // per-url ETag for conditional GET (SRC-007.3)
   lastModified?: Record<string, string>;
   lastSuccessfulAt?: string;
 }
 
 export interface HealthStatus {
   status: 'healthy' | 'degraded' | 'failing' | 'unknown';
-  message?: string;            // e.g., "no valid JobPosting JSON-LD found"
+  message?: string; // e.g., "no valid JobPosting JSON-LD found"
   consecutiveFailures: number;
   lastCheckedAt: string;
 }
 
 export interface ConnectorContext {
   connectionId: string;
-  config: Record<string, unknown>;   // board slug / domain / options
-  fetcher: SafeFetcher;              // the ONLY way a connector may reach the network
+  config: Record<string, unknown>; // board slug / domain / options
+  fetcher: SafeFetcher; // the ONLY way a connector may reach the network
   logger: Logger;
   correlationId: string;
   signal: AbortSignal;
@@ -234,7 +235,7 @@ export interface ConnectorContext {
 
 export interface OpportunityConnector {
   readonly sourceType: SourceType;
-  readonly isFirstParty: boolean;    // greenhouse/lever/ashby/jsonld = true (SRC-002.3, SRC-003.3)
+  readonly isFirstParty: boolean; // greenhouse/lever/ashby/jsonld = true (SRC-002.3, SRC-003.3)
 
   discover(ctx: ConnectorContext, checkpoint: Checkpoint): AsyncIterable<DiscoveryRef>;
   fetch(ctx: ConnectorContext, ref: DiscoveryRef, checkpoint: Checkpoint): Promise<FetchResult>;
@@ -264,12 +265,12 @@ export interface SafeFetchOptions {
   method?: 'GET' | 'HEAD';
   headers?: Record<string, string>;
   allowedContentTypes: string[]; // SEC-002.6 (per-connector allow set)
-  maxBytes: number;              // SEC-002.4
-  timeoutMs: number;             // SEC-002.5
-  maxRedirects: number;          // SEC-002.3
+  maxBytes: number; // SEC-002.4
+  timeoutMs: number; // SEC-002.5
+  maxRedirects: number; // SEC-002.3
   conditional?: { etag?: string; lastModified?: string }; // SRC-007.3
-  domainPolicy: { allow?: string[]; deny?: string[] };    // SEC-002.7 (deny beats allow)
-  respectRobots: boolean;        // SEC-002.2
+  domainPolicy: { allow?: string[]; deny?: string[] }; // SEC-002.7 (deny beats allow)
+  respectRobots: boolean; // SEC-002.2
 }
 
 export interface SafeFetcher {
@@ -281,7 +282,7 @@ Enforcement pipeline inside `SafeFetcher.fetch()`:
 
 1. **Domain policy** — reject denied domains before DNS; deny-list beats allow-list (SEC-002.7).
 2. **Robots** — honor robots directives where applicable, cached per host (SEC-002.2).
-3. **DNS resolve + SSRF guard (SEC-001).** Resolve host, reject if *any* resolved IP is private (`10/8`, `172.16/12`, `192.168/16`), loopback (`127/8`, `::1`), link-local (`169.254/16`, `fe80::/10`), unique-local (`fc00::/7`), reserved/unspecified/multicast, or cloud metadata (`169.254.169.254`, `fd00:ec2::254`). **Pin** the connection to the validated IP (anti DNS-rebinding).
+3. **DNS resolve + SSRF guard (SEC-001).** Resolve host, reject if _any_ resolved IP is private (`10/8`, `172.16/12`, `192.168/16`), loopback (`127/8`, `::1`), link-local (`169.254/16`, `fe80::/10`), unique-local (`fc00::/7`), reserved/unspecified/multicast, or cloud metadata (`169.254.169.254`, `fd00:ec2::254`). **Pin** the connection to the validated IP (anti DNS-rebinding).
 4. **Descriptive User-Agent** attached (SEC-002.1).
 5. **Conditional headers** — send `If-None-Match`/`If-Modified-Since` from checkpoint; a `304` short-circuits with `notModified: true` (SRC-007.3).
 6. **Request** with `timeoutMs`; abort on timeout (SEC-002.5).
@@ -319,26 +320,38 @@ The single application-layer shape used by the API and explorer:
 
 ```ts
 export type WorkArrangement = 'on_site' | 'hybrid' | 'remote';
-export type EmploymentType  = 'full_time' | 'part_time' | 'contract' | 'internship' | 'temporary';
-export type Seniority       = 'intern' | 'junior' | 'mid' | 'senior' | 'lead' | 'principal' | 'executive';
-export type SalaryPeriod    = 'hour' | 'day' | 'month' | 'year';
+export type EmploymentType = 'full_time' | 'part_time' | 'contract' | 'internship' | 'temporary';
+export type Seniority = 'intern' | 'junior' | 'mid' | 'senior' | 'lead' | 'principal' | 'executive';
+export type SalaryPeriod = 'hour' | 'day' | 'month' | 'year';
 
 /** Canonical stored status (subset). Saved/Dismissed/Applied are display overlays, not stored here. */
 export type CanonicalStatus =
-  | 'New' | 'Active' | 'Closing soon' | 'Closed' | 'Expired' | 'Removed' | 'Needs review' | 'Duplicate';
+  | 'New'
+  | 'Active'
+  | 'Closing soon'
+  | 'Closed'
+  | 'Expired'
+  | 'Removed'
+  | 'Needs review'
+  | 'Duplicate';
 /** Full display vocabulary (Req 46). 'Applied' is reserved/out-of-scope this slice. */
 export type DisplayStatus = CanonicalStatus | 'Saved' | 'Applied' | 'Dismissed';
 
 export interface Evidence {
-  field: string;                 // canonical field this evidence supports
-  rawArtifactId: string;         // OPP-003.1
+  field: string; // canonical field this evidence supports
+  rawArtifactId: string; // OPP-003.1
   sourceText: string;
   method: ExtractionMethod;
-  confidence: number;            // 0..1
-  uncertain: boolean;            // OPP-003.4
+  confidence: number; // 0..1
+  uncertain: boolean; // OPP-003.4
 }
 
-export interface SalaryRange { min?: number; max?: number; currency?: string; period?: SalaryPeriod; }
+export interface SalaryRange {
+  min?: number;
+  max?: number;
+  currency?: string;
+  period?: SalaryPeriod;
+}
 
 export interface OpportunitySourceRef {
   id: string;
@@ -346,8 +359,8 @@ export interface OpportunitySourceRef {
   externalId: string;
   sourceUrl: string;
   applyUrl?: string;
-  isFirstParty: boolean;         // UX marker + first-party-wins (OPP-005.4, G6.3)
-  rawArtifactId?: string;        // preserved reference (OPP-006.3)
+  isFirstParty: boolean; // UX marker + first-party-wins (OPP-005.4, G6.3)
+  rawArtifactId?: string; // preserved reference (OPP-006.3)
   confidence?: number;
 }
 
@@ -361,16 +374,16 @@ export interface Opportunity {
   workArrangement?: WorkArrangement;
   employmentType?: EmploymentType;
   seniority?: Seniority;
-  salary?: SalaryRange;                 // only if present in source (OPP-003.3)
-  description?: string;                 // detail-only; EXCLUDED from list responses (OPP-002.4, PERF)
-  status: CanonicalStatus;              // stored canonical status (G7)
+  salary?: SalaryRange; // only if present in source (OPP-003.3)
+  description?: string; // detail-only; EXCLUDED from list responses (OPP-002.4, PERF)
+  status: CanonicalStatus; // stored canonical status (G7)
   postedAt?: string;
   firstSeenAt: string;
-  lastUpdatedAt: string;                // OPP-008.3, sort key
+  lastUpdatedAt: string; // OPP-008.3, sort key
   closingAt?: string;
-  isFirstParty: boolean;                // any contributing first-party source (G6.3)
-  sources: OpportunitySourceRef[];      // >= 1 always (provenance, OPP-006)
-  evidence: Evidence[];                 // OPP-003
+  isFirstParty: boolean; // any contributing first-party source (G6.3)
+  sources: OpportunitySourceRef[]; // >= 1 always (provenance, OPP-006)
+  evidence: Evidence[]; // OPP-003
 
   // --- Reserved for future match/analysis specs; NOT populated here (OPP-002.3, G6.5) ---
   matchScore?: never;
@@ -396,36 +409,43 @@ Versioned under `/api/v1`. All request/response bodies are validated against sha
 Standard error envelope:
 
 ```json
-{ "error": { "code": "FORBIDDEN", "message": "You do not have access to this resource.", "requestId": "req_01H...", "details": [] } }
+{
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "You do not have access to this resource.",
+    "requestId": "req_01H...",
+    "details": []
+  }
+}
 ```
 
 Cursor pagination envelope:
 
 ```json
-{ "data": [ /* items */ ], "page": { "nextCursor": "eyJ...", "hasMore": true } }
+{ "data": [/* items */], "page": { "nextCursor": "eyJ...", "hasMore": true } }
 ```
 
-| Resource | Method + Path | Notes / Requirements |
-|---|---|---|
-| Auth | `POST /auth/oauth/google/start` | redirect w/ state+PKCE (AUTH-001, PRIV-004) |
-| Auth | `GET /auth/oauth/google/callback` | validate state, exchange code, issue session (AUTH-001) |
-| Auth | `POST /auth/magic-link` / `GET /auth/magic-link/verify` | send / consume single-use link (AUTH-002) |
-| Auth | `POST /auth/logout` | revoke current session |
-| Sessions | `GET /me/sessions`, `DELETE /me/sessions/{id}`, `DELETE /me/sessions?others=true` | list/revoke (AUTH-003) |
-| Me | `GET /me`, `PATCH /me/preferences` | profile, theme, timezone (A3.5) |
-| Role profiles | `GET/POST /role-profiles`, `GET/PATCH/DELETE /role-profiles/{id}` | ownership-checked (PROF-*) |
-| Role profiles | `POST /role-profiles/{id}/activate` `/duplicate` `/pause` `/resume` | C1, C8, C9 |
-| Opportunities | `GET /opportunities` | filters+sort+cursor; **no `description`** (G1–G3, PERF) |
-| Opportunities | `GET /opportunities/{id}` | full detail + sources + evidence (G6) |
-| Opportunities | `PUT/DELETE /opportunities/{id}/save`, `/dismiss` | per-user state (G4) |
-| Sources | `GET /connectors`, `GET/POST /connections`, `PATCH/DELETE /connections/{id}` | pause/remove (SRC-005/006) |
-| Sources | `POST /connections/{id}/run`, `POST /sources/manual-url` | enqueue (SRC-004, RES-002) |
-| Sources | `POST /connections/{id}/disconnect` | revoke OAuth (PRIV-003) |
-| Runs | `GET /connections/{id}/runs`, `GET /runs/{id}` | observable runs (SRC-005) |
-| Admin | `GET /admin/connector-health`, `GET /admin/runs`, `GET /admin/review-queue`, `GET /admin/parser-failures` | admin-guarded + audited (H1,H2) |
-| Privacy | `POST /privacy/export`, `GET /privacy/export/{id}` | async export + status (PRIV-001, RES-002) |
-| Privacy | `POST /privacy/delete-account`, `POST /privacy/delete-data` | confirmation-gated (PRIV-002) |
-| Live | `GET /events` | SSE: run status, opportunity changes, export status (RES-002) |
+| Resource      | Method + Path                                                                                             | Notes / Requirements                                          |
+| ------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Auth          | `POST /auth/oauth/google/start`                                                                           | redirect w/ state+PKCE (AUTH-001, PRIV-004)                   |
+| Auth          | `GET /auth/oauth/google/callback`                                                                         | validate state, exchange code, issue session (AUTH-001)       |
+| Auth          | `POST /auth/magic-link` / `GET /auth/magic-link/verify`                                                   | send / consume single-use link (AUTH-002)                     |
+| Auth          | `POST /auth/logout`                                                                                       | revoke current session                                        |
+| Sessions      | `GET /me/sessions`, `DELETE /me/sessions/{id}`, `DELETE /me/sessions?others=true`                         | list/revoke (AUTH-003)                                        |
+| Me            | `GET /me`, `PATCH /me/preferences`                                                                        | profile, theme, timezone (A3.5)                               |
+| Role profiles | `GET/POST /role-profiles`, `GET/PATCH/DELETE /role-profiles/{id}`                                         | ownership-checked (PROF-*)                                    |
+| Role profiles | `POST /role-profiles/{id}/activate` `/duplicate` `/pause` `/resume`                                       | C1, C8, C9                                                    |
+| Opportunities | `GET /opportunities`                                                                                      | filters+sort+cursor; **no `description`** (G1–G3, PERF)       |
+| Opportunities | `GET /opportunities/{id}`                                                                                 | full detail + sources + evidence (G6)                         |
+| Opportunities | `PUT/DELETE /opportunities/{id}/save`, `/dismiss`                                                         | per-user state (G4)                                           |
+| Sources       | `GET /connectors`, `GET/POST /connections`, `PATCH/DELETE /connections/{id}`                              | pause/remove (SRC-005/006)                                    |
+| Sources       | `POST /connections/{id}/run`, `POST /sources/manual-url`                                                  | enqueue (SRC-004, RES-002)                                    |
+| Sources       | `POST /connections/{id}/disconnect`                                                                       | revoke OAuth (PRIV-003)                                       |
+| Runs          | `GET /connections/{id}/runs`, `GET /runs/{id}`                                                            | observable runs (SRC-005)                                     |
+| Admin         | `GET /admin/connector-health`, `GET /admin/runs`, `GET /admin/review-queue`, `GET /admin/parser-failures` | admin-guarded + audited (H1,H2)                               |
+| Privacy       | `POST /privacy/export`, `GET /privacy/export/{id}`                                                        | async export + status (PRIV-001, RES-002)                     |
+| Privacy       | `POST /privacy/delete-account`, `POST /privacy/delete-data`                                               | confirmation-gated (PRIV-002)                                 |
+| Live          | `GET /events`                                                                                             | SSE: run status, opportunity changes, export status (RES-002) |
 
 Explorer filter dimensions (41): opportunity type, roleProfileId, company, location, workArrangement, employmentType, seniority, source, postedAfter/Before, firstSeenAfter/Before, closesBefore, state (saved/dismissed/needsReview), freshness, duplicateGroupId. Sorts (42): `newest | newlyDiscovered | closingSoon | recentlyUpdated`.
 
@@ -878,167 +898,167 @@ feature_flags                    -- config-driven toggles (incl. future connecto
 
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system — a formal statement about what the system should do. Properties bridge human-readable specifications and machine-verifiable correctness guarantees.* Each property below is universally quantified and implemented as a single property-based test (fast-check, ≥100 iterations). The pure domain logic in `packages/shared`, `packages/connectors`, and `packages/security` is the primary target; repository-backed properties use an in-memory or transactional test harness. Redundant criteria were consolidated during prework reflection (e.g., scope-minimality, no-fabrication, list-projection, ownership isolation, and the dedup family are each a single property or tight family).
+_A property is a characteristic or behavior that should hold true across all valid executions of a system — a formal statement about what the system should do. Properties bridge human-readable specifications and machine-verifiable correctness guarantees._ Each property below is universally quantified and implemented as a single property-based test (fast-check, ≥100 iterations). The pure domain logic in `packages/shared`, `packages/connectors`, and `packages/security` is the primary target; repository-backed properties use an in-memory or transactional test harness. Redundant criteria were consolidated during prework reflection (e.g., scope-minimality, no-fabrication, list-projection, ownership isolation, and the dedup family are each a single property or tight family).
 
 ### Property 1: Normalization never fabricates absent facts
 
-*For any* `ParsedOpportunity`, `normalize()` produces a canonical record in which every populated field traces to a source-present fact carrying `Evidence` (with a valid `ExtractionMethod`), and any field absent from the source is either omitted or marked `uncertain` — never assigned a fabricated default. In particular salary, work-rights, requirements, and closing dates are never invented.
+_For any_ `ParsedOpportunity`, `normalize()` produces a canonical record in which every populated field traces to a source-present fact carrying `Evidence` (with a valid `ExtractionMethod`), and any field absent from the source is either omitted or marked `uncertain` — never assigned a fabricated default. In particular salary, work-rights, requirements, and closing dates are never invented.
 Generator: arbitrary `ParsedOpportunity` with a random subset of fields present. Oracle: for every canonical field, `present-in-output ⇒ present-in-input`; and every output value has ≥1 evidence entry whose `sourceText` is drawn from the input.
 **Validates: Requirements 34.1, 34.2, 34.3, 34.4, 22.2**
 
 ### Property 2: Deduplication is deterministic, idempotent, and order-independent
 
-*For any* set of `Opportunity_Source` records and any permutation of them, `dedup()` yields the same canonical grouping; and `dedup(dedup(S)) == dedup(S)`. Formally `merge(A,B) ≡ merge(B,A)` and any arrival order produces identical groups.
+_For any_ set of `Opportunity_Source` records and any permutation of them, `dedup()` yields the same canonical grouping; and `dedup(dedup(S)) == dedup(S)`. Formally `merge(A,B) ≡ merge(B,A)` and any arrival order produces identical groups.
 Generator: arbitrary source multiset; test all/random permutations. Oracle: grouping partition equality across permutations; second application is a fixpoint.
 **Validates: Requirements 36.1, 36.2**
 
 ### Property 3: Exact-identity uniqueness on (source_type, external_id)
 
-*For any* two `Opportunity_Source` records sharing the same `(source_type, external_id)` (or identical canonical URL), dedup always assigns them to the same `Canonical_Opportunity`, and the store never persists two canonical rows for one identity key.
+_For any_ two `Opportunity_Source` records sharing the same `(source_type, external_id)` (or identical canonical URL), dedup always assigns them to the same `Canonical_Opportunity`, and the store never persists two canonical rows for one identity key.
 Generator: arbitrary sources with deliberate identity collisions. Oracle: same canonical id; unique-constraint honored.
 **Validates: Requirements 36.1, 36.2**
 
 ### Property 4: Fingerprint stability
 
-*For any* two records whose normalized `(company, title, location, employment_type, posting_date_bucket)` are equal, their `fingerprint` is equal; and `fingerprint` is a pure deterministic function of those inputs (equal inputs ⇒ equal output, independent of ordering or unrelated fields).
+_For any_ two records whose normalized `(company, title, location, employment_type, posting_date_bucket)` are equal, their `fingerprint` is equal; and `fingerprint` is a pure deterministic function of those inputs (equal inputs ⇒ equal output, independent of ordering or unrelated fields).
 Generator: arbitrary field tuples plus noise fields. Oracle: equality of fingerprints iff normalized inputs equal.
 **Validates: Requirements 36.1**
 
 ### Property 5: First-party-wins canonical selection
 
-*For any* duplicate group mixing First_Party and aggregator sources, every canonical field value is taken from a First_Party source (tie-broken by evidence confidence then recency); aggregator sources remain linked but do not supply canonical values when a first-party value exists.
+_For any_ duplicate group mixing First_Party and aggregator sources, every canonical field value is taken from a First_Party source (tie-broken by evidence confidence then recency); aggregator sources remain linked but do not supply canonical values when a first-party value exists.
 Generator: arbitrary groups with ≥1 first-party and ≥1 aggregator source. Oracle: each canonical field's provenance is a first-party source when one supplies that field.
 **Validates: Requirements 36.4, 21.4**
 
 ### Property 6: Low-confidence fuzzy matches are never auto-merged
 
-*For any* candidate pair whose fuzzy similarity is below `mergeThreshold`, dedup does not merge them; instead a `review_queue_items` row (`uncertain_duplicate`) is produced.
+_For any_ candidate pair whose fuzzy similarity is below `mergeThreshold`, dedup does not merge them; instead a `review_queue_items` row (`uncertain_duplicate`) is produced.
 Generator: pairs engineered to fall below threshold. Oracle: distinct canonical ids + a review item exists.
 **Validates: Requirements 36.3**
 
 ### Property 7: Provenance preserved after merge
 
-*For any* merge, the count and identity of contributing `Opportunity_Source` records are preserved after merging, and each retains its `raw_artifact` reference. No source is dropped.
+_For any_ merge, the count and identity of contributing `Opportunity_Source` records are preserved after merging, and each retains its `raw_artifact` reference. No source is dropped.
 Generator: arbitrary mergeable groups. Oracle: `sources(canonical)` (as a set) equals the union of inputs; each has a non-null `raw_artifact_id`.
 **Validates: Requirements 37.1, 37.2, 37.3**
 
 ### Property 8: Per-user isolation invariant
 
-*For any* two distinct users A and B and any user-owned resource of B (role profiles, saved/dismissed state, sessions, exports, connections, work-rights), a request made on behalf of A is denied/not-found by every user-scoped repository. A user's private state is never visible to another user.
+_For any_ two distinct users A and B and any user-owned resource of B (role profiles, saved/dismissed state, sessions, exports, connections, work-rights), a request made on behalf of A is denied/not-found by every user-scoped repository. A user's private state is never visible to another user.
 Generator: arbitrary two-user datasets + arbitrary resource requests. Oracle: cross-owner access returns deny/not-found; same-owner access succeeds.
 **Validates: Requirements 54.1, 54.2, 54.3, 10.5, 16.3, 19.4, 43.4, 49.2**
 
 ### Property 9: SSRF guard rejects all unsafe addresses (incl. on redirect)
 
-*For any* URL whose resolved IP set intersects the blocklist (private, loopback, link-local, unique-local, reserved, or cloud-metadata), `SafeFetcher` rejects the request before sending a body; and the same check is re-applied to every redirect target so a safe→unsafe redirect is also rejected.
+_For any_ URL whose resolved IP set intersects the blocklist (private, loopback, link-local, unique-local, reserved, or cloud-metadata), `SafeFetcher` rejects the request before sending a body; and the same check is re-applied to every redirect target so a safe→unsafe redirect is also rejected.
 Generator: arbitrary IPs across all blocked ranges + redirect chains ending in blocked IPs. Oracle: rejection for any blocked address at any hop; allowed only when every hop is public.
 **Validates: Requirements 30.1, 30.2, 30.3**
 
 ### Property 10: Safe-fetch bounds are enforced
 
-*For any* fetch, a response exceeding `maxBytes` is aborted, a redirect chain longer than `maxRedirects` is aborted, a timeout beyond `timeoutMs` aborts the request, a content-type outside `allowedContentTypes` is rejected, and a domain on the deny-list is rejected even if also allow-listed (deny beats allow).
+_For any_ fetch, a response exceeding `maxBytes` is aborted, a redirect chain longer than `maxRedirects` is aborted, a timeout beyond `timeoutMs` aborts the request, a content-type outside `allowedContentTypes` is rejected, and a domain on the deny-list is rejected even if also allow-listed (deny beats allow).
 Generator: arbitrary sizes/redirect-counts/content-types/domain policies. Oracle: outcome matches the bound predicate for each dimension.
 **Validates: Requirements 31.3, 31.4, 31.5, 31.6, 31.7**
 
 ### Property 11: Per-domain rate limit is never exceeded and defers rather than drops
 
-*For any* arrival pattern of requests to a domain, the number dispatched within any window never exceeds the configured budget, and every over-budget request is deferred and eventually retried (none dropped).
+_For any_ arrival pattern of requests to a domain, the number dispatched within any window never exceeds the configured budget, and every over-budget request is deferred and eventually retried (none dropped).
 Generator: arbitrary arrival bursts + budgets. Oracle: windowed dispatch count ≤ budget; deferred set is eventually drained.
 **Validates: Requirements 27.1, 27.2, 27.3**
 
 ### Property 12: Magic-link lifecycle and expiry bound
 
-*For any* issued magic-link token: (a) `expires_at − created_at ≤ 15 minutes`; (b) a valid, unexpired, unused token establishes a session and marks the token used; (c) an expired or already-used token is rejected and never establishes a session.
+_For any_ issued magic-link token: (a) `expires_at − created_at ≤ 15 minutes`; (b) a valid, unexpired, unused token establishes a session and marks the token used; (c) an expired or already-used token is rejected and never establishes a session.
 Generator: arbitrary issue/verify sequences over a controllable clock. Oracle: expiry bound holds; single-use enforced; expired/used → reject.
 **Validates: Requirements 5.2, 5.3, 5.4**
 
 ### Property 13: OAuth requested scopes are minimal
 
-*For any* OAuth start, the requested scope set is a subset of the allowed minimal set (`openid email profile`) and never includes out-of-scope capabilities.
+_For any_ OAuth start, the requested scope set is a subset of the allowed minimal set (`openid email profile`) and never includes out-of-scope capabilities.
 Generator: arbitrary flow configs. Oracle: `requestedScopes ⊆ minimalScopes`.
 **Validates: Requirements 4.1, 52.1, 52.2**
 
 ### Property 14: One active role profile invariant
 
-*For any* sequence of role-profile operations (create, activate, duplicate, pause, resume, delete), the user has at most one Active_Role_Profile at all times, and exactly one whenever ≥1 profile exists after the first creation; duplicate leaves the active pointer unchanged and pause never leaves the active profile paused.
+_For any_ sequence of role-profile operations (create, activate, duplicate, pause, resume, delete), the user has at most one Active_Role_Profile at all times, and exactly one whenever ≥1 profile exists after the first creation; duplicate leaves the active pointer unchanged and pause never leaves the active profile paused.
 Generator: arbitrary op sequences. Oracle: active count ∈ {0,1}, and = 1 once any profile exists; invariants after each op.
 **Validates: Requirements 10.1, 10.2, 10.3, 10.4, 17.2, 18.2**
 
 ### Property 15: Role profile persistence round-trips
 
-*For any* role profile with arbitrary title/skill/location/employment/seniority facet sets and salary/work-rights, saving then loading returns equal facet sets; unspecified salary and work-rights remain null/unspecified (never defaulted to zero or inferred).
+_For any_ role profile with arbitrary title/skill/location/employment/seniority facet sets and salary/work-rights, saving then loading returns equal facet sets; unspecified salary and work-rights remain null/unspecified (never defaulted to zero or inferred).
 Generator: arbitrary role profiles including empty/unspecified fields. Oracle: `load(save(p)) == p` on facet sets; nulls preserved.
 **Validates: Requirements 11.3, 12.3, 13.3, 14.3, 15.2, 15.3, 16.5, 17.1**
 
 ### Property 16: Idempotent ingestion and change detection
 
-*For any* fetched content, a `raw_artifact` row is persisted before any `opportunity_source` is written; re-ingesting content with an identical `content_hash` creates no duplicate artifact, no `content_revision`, and does not advance `last_updated_at`; ingesting changed content creates exactly one `content_revision` listing the changed fields and advances `last_updated_at`. A `304 Not Modified` skips re-parse and mutates nothing.
+_For any_ fetched content, a `raw_artifact` row is persisted before any `opportunity_source` is written; re-ingesting content with an identical `content_hash` creates no duplicate artifact, no `content_revision`, and does not advance `last_updated_at`; ingesting changed content creates exactly one `content_revision` listing the changed fields and advances `last_updated_at`. A `304 Not Modified` skips re-parse and mutates nothing.
 Generator: arbitrary fetch sequences with repeats and mutations. Oracle: artifact-before-source ordering; idempotence on identical hash; single revision + advanced timestamp on change.
 **Validates: Requirements 32.1, 32.2, 39.1, 39.2, 39.3, 26.2, 26.3**
 
 ### Property 17: Invalid/unparseable records route to the review queue with retained artifact
 
-*For any* fetched artifact that fails to parse/validate against the canonical schema, the `raw_artifact` is retained and a `review_queue_item` is created with a non-empty reason; no partial/fabricated canonical opportunity is persisted for it.
+_For any_ fetched artifact that fails to parse/validate against the canonical schema, the `raw_artifact` is retained and a `review_queue_item` is created with a non-empty reason; no partial/fabricated canonical opportunity is persisted for it.
 Generator: arbitrary malformed/incomplete artifacts. Oracle: review item + retained artifact exist; no canonical row.
 **Validates: Requirements 23.2, 35.1, 35.2, 35.3**
 
 ### Property 18: Closure is set only on definitive signals
 
-*For any* source closure signal: a definitive `closed`/`removed` signal sets status to `Closed`/`Removed`; an ambiguous/unknown signal leaves status unchanged (not forced to `Closed`) and marks the fact uncertain; closed records remain retrievable.
+_For any_ source closure signal: a definitive `closed`/`removed` signal sets status to `Closed`/`Removed`; an ambiguous/unknown signal leaves status unchanged (not forced to `Closed`) and marks the fact uncertain; closed records remain retrievable.
 Generator: arbitrary closure signals. Oracle: status transition matches signal definiteness; record still readable.
 **Validates: Requirements 38.1, 38.2, 38.3**
 
 ### Property 19: List responses never include full descriptions
 
-*For any* opportunity and any explorer list/collection query, the serialized list DTO/projection contains no `description` field; the description is present only via the detail endpoint.
+_For any_ opportunity and any explorer list/collection query, the serialized list DTO/projection contains no `description` field; the description is present only via the detail endpoint.
 Generator: arbitrary opportunities + list queries. Oracle: `description` key absent from every list item; present in detail DTO.
 **Validates: Requirements 33.4, 40.3, 58.3, 45.1**
 
 ### Property 20: Explorer filtering is sound and complete
 
-*For any* set of opportunities and any combination of active filters, every returned item satisfies all active predicates (soundness) and the result set is a subset of the unfiltered set; and every unfiltered item satisfying all predicates is returned (completeness).
+_For any_ set of opportunities and any combination of active filters, every returned item satisfies all active predicates (soundness) and the result set is a subset of the unfiltered set; and every unfiltered item satisfying all predicates is returned (completeness).
 Generator: arbitrary opportunity sets + filter combinations. Oracle: result set equals the reference in-memory filter over the same predicates.
 **Validates: Requirements 41.1, 41.2, 41.3, 41.4, 41.5**
 
 ### Property 21: Sorting orders by the selected key together with filters
 
-*For any* sort option (`newest | newlyDiscovered | closingSoon | recentlyUpdated`) and any filter set, the returned sequence is ordered by the corresponding key and contains exactly the filtered items.
+_For any_ sort option (`newest | newlyDiscovered | closingSoon | recentlyUpdated`) and any filter set, the returned sequence is ordered by the corresponding key and contains exactly the filtered items.
 Generator: arbitrary sets + sort/filter combinations. Oracle: output is a sorted permutation of the filtered set by the chosen key.
 **Validates: Requirements 42.1, 42.2, 42.3, 40.2**
 
 ### Property 22: Pagination is complete and non-overlapping
 
-*For any* result set and page size, concatenating all cursor pages reproduces the full ordered result exactly once — no duplicates and no gaps.
+_For any_ result set and page size, concatenating all cursor pages reproduces the full ordered result exactly once — no duplicates and no gaps.
 Generator: arbitrary result sizes + page sizes. Oracle: `concat(pages) == fullOrdered`.
 **Validates: Requirements 40.4, 58.3**
 
 ### Property 23: Save/dismiss set/reverse round-trip, scoped per user
 
-*For any* user and opportunity, saving then reversing clears the state (`none`); dismissing then reversing clears the state; the state is unique per `(user, opportunity)` and never leaks to other users.
+_For any_ user and opportunity, saving then reversing clears the state (`none`); dismissing then reversing clears the state; the state is unique per `(user, opportunity)` and never leaks to other users.
 Generator: arbitrary save/dismiss/reverse sequences across users. Oracle: final state matches last effective action; cross-user reads unaffected.
 **Validates: Requirements 43.1, 43.2, 43.3, 43.4**
 
 ### Property 24: Explorer URL state round-trips and carries no private data
 
-*For any* explorer state (filters + sort), `decodeExplorerState(encodeExplorerState(state)) == state`; and the encoded params contain only filter/sort keys — never user-private fields.
+_For any_ explorer state (filters + sort), `decodeExplorerState(encodeExplorerState(state)) == state`; and the encoded params contain only filter/sort keys — never user-private fields.
 Generator: arbitrary explorer states. Oracle: round-trip identity + key-set ⊆ {filter, sort} keys.
 **Validates: Requirements 44.1, 44.2, 44.3**
 
 ### Property 25: Display status is always within the fixed vocabulary
 
-*For any* opportunity canonical status combined with any per-user overlay state, the computed display status is a member of the fixed label set {New, Active, Closing soon, Closed, Expired, Removed, Needs review, Duplicate, Saved, Applied, Dismissed}.
+_For any_ opportunity canonical status combined with any per-user overlay state, the computed display status is a member of the fixed label set {New, Active, Closing soon, Closed, Expired, Removed, Needs review, Duplicate, Saved, Applied, Dismissed}.
 Generator: arbitrary (canonicalStatus, userState) pairs. Oracle: result ∈ fixed set (total function, no out-of-vocabulary label).
 **Validates: Requirements 46.1, 46.2**
 
 ### Property 26: Connector failure isolation and continued accessibility
 
-*For any* connector operation that throws, the run is recorded as failed with a reason, the worker process is not terminated, other connectors keep running, and reads of the canonical store (explorer/detail) still succeed. Pausing, removing, or disconnecting a source, or retention removing raw artifacts, leaves previously ingested canonical opportunities readable.
+_For any_ connector operation that throws, the run is recorded as failed with a reason, the worker process is not terminated, other connectors keep running, and reads of the canonical store (explorer/detail) still succeed. Pausing, removing, or disconnecting a source, or retention removing raw artifacts, leaves previously ingested canonical opportunities readable.
 Generator: arbitrary connector failures + pause/remove/disconnect/retention operations. Oracle: failure captured; other runs proceed; canonical reads succeed post-operation.
 **Validates: Requirements 20.4, 24.3, 25.1, 25.3, 51.2, 51.3, 53.3, 55.1, 55.2, 55.3**
 
 ### Property 27: No stored third-party passwords (Hard_Blocker)
 
-*For any* connected account/connection persisted by the system, the stored record contains no password field and no plaintext credential; only OAuth tokens (encrypted) or public-feed config are stored.
+_For any_ connected account/connection persisted by the system, the stored record contains no password field and no plaintext credential; only OAuth tokens (encrypted) or public-feed config are stored.
 Generator: arbitrary connect/OAuth flows. Oracle: persisted account/connection shape has no password-typed field; token columns are encrypted.
 **Validates: Requirements 4.5, 21.5, 28.1**
 
@@ -1049,21 +1069,28 @@ Generator: arbitrary connect/OAuth flows. Oracle: persisted account/connection s
 All API errors use one envelope (also the shape asserted by contract tests):
 
 ```json
-{ "error": { "code": "STRING_CODE", "message": "user-facing, non-technical", "requestId": "req_...", "details": [] } }
+{
+  "error": {
+    "code": "STRING_CODE",
+    "message": "user-facing, non-technical",
+    "requestId": "req_...",
+    "details": []
+  }
+}
 ```
 
 `message` is always non-technical and safe to surface in the UI (4.3). `details` carries per-field validation problems for `VALIDATION_ERROR`. Canonical codes → HTTP status:
 
-| Code | HTTP | When |
-|---|---|---|
-| `VALIDATION_ERROR` | 400 | Zod schema failure; `details[]` lists field paths + messages |
-| `UNAUTHENTICATED` | 401 | Missing/invalid session or revoked session (Property 12/23) |
-| `FORBIDDEN` | 403 | Authenticated but not owner / not admin (PRIV-006, AUTH-005) |
-| `NOT_FOUND` | 404 | Resource missing **or** foreign-owned (isolation returns not-found, not "exists") |
-| `CONFLICT` | 409 | Idempotency-key replay mismatch, unique-constraint violation |
-| `RATE_LIMITED` | 429 | Per-user quota exceeded; `Retry-After` set |
-| `PAYLOAD_TOO_LARGE` | 413 | Request body limits |
-| `INTERNAL` | 500 | Unexpected; correlation id logged, generic message returned |
+| Code                | HTTP | When                                                                              |
+| ------------------- | ---- | --------------------------------------------------------------------------------- |
+| `VALIDATION_ERROR`  | 400  | Zod schema failure; `details[]` lists field paths + messages                      |
+| `UNAUTHENTICATED`   | 401  | Missing/invalid session or revoked session (Property 12/23)                       |
+| `FORBIDDEN`         | 403  | Authenticated but not owner / not admin (PRIV-006, AUTH-005)                      |
+| `NOT_FOUND`         | 404  | Resource missing **or** foreign-owned (isolation returns not-found, not "exists") |
+| `CONFLICT`          | 409  | Idempotency-key replay mismatch, unique-constraint violation                      |
+| `RATE_LIMITED`      | 429  | Per-user quota exceeded; `Retry-After` set                                        |
+| `PAYLOAD_TOO_LARGE` | 413  | Request body limits                                                               |
+| `INTERNAL`          | 500  | Unexpected; correlation id logged, generic message returned                       |
 
 Ownership failures deliberately return `NOT_FOUND` for user-scoped resources to avoid leaking existence across tenants (supports Property 8). CSRF failures and OAuth `state` mismatches map to `FORBIDDEN`.
 
@@ -1071,15 +1098,15 @@ Ownership failures deliberately return `NOT_FOUND` for user-scoped resources to 
 
 `SafeFetcher` and connectors raise typed errors that the pipeline classifies as **retryable** vs **terminal**:
 
-| Error | Class | Handling |
-|---|---|---|
-| `SsrfBlockedError` (blocked IP / redirect) | terminal | reject fetch, record on run, no retry (Property 9) |
-| `DomainDeniedError` | terminal | reject, record, no retry |
-| `ContentTypeRejectedError` | terminal | reject artifact, route to review if manual URL |
-| `ResponseTooLargeError` / `TimeoutError` | retryable (bounded) | backoff + retry; DLQ on exhaustion |
-| `RateLimitedError` / upstream 429/503 | retryable | defer/backoff with jitter (Property 11) |
-| `ParseError` / `ValidationError` | terminal-for-record | retain raw artifact, create `review_queue_item` (Property 17) |
-| `ConnectorThrew` (any uncaught) | isolated | captured against the `Connection`; worker survives; other connectors continue (Property 26) |
+| Error                                      | Class               | Handling                                                                                    |
+| ------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------- |
+| `SsrfBlockedError` (blocked IP / redirect) | terminal            | reject fetch, record on run, no retry (Property 9)                                          |
+| `DomainDeniedError`                        | terminal            | reject, record, no retry                                                                    |
+| `ContentTypeRejectedError`                 | terminal            | reject artifact, route to review if manual URL                                              |
+| `ResponseTooLargeError` / `TimeoutError`   | retryable (bounded) | backoff + retry; DLQ on exhaustion                                                          |
+| `RateLimitedError` / upstream 429/503      | retryable           | defer/backoff with jitter (Property 11)                                                     |
+| `ParseError` / `ValidationError`           | terminal-for-record | retain raw artifact, create `review_queue_item` (Property 17)                               |
+| `ConnectorThrew` (any uncaught)            | isolated            | captured against the `Connection`; worker survives; other connectors continue (Property 26) |
 
 Each connector operation runs inside a try/catch that converts throws into a recorded `connector_run` failure with `failure_reason`; **no connector error propagates to the request path** (RES-001).
 
@@ -1201,25 +1228,25 @@ Fixed, checked-in fixtures for **Greenhouse, Lever, Ashby, and JSON-LD** respons
 
 ### Design section → requirements
 
-| Design area | Requirements |
-|---|---|
-| Overview / capability map | R1–R58 (all) |
-| Architecture (monorepo, modules, ingestion flow) | SRC-001, RES-001, OPP-001..008 |
-| Components §1 Connector Framework | R20–R23 (SRC-001..004) |
-| Components §2 SafeFetcher | R23.3, R27, R30, R31 (SEC-001/002, SRC-008) |
-| Components §3 Normalization / §4 Dedup / §5 Canonical types | R32–R37 (OPP-001..006) |
-| Components §6 Auth & Authorization | R4–R9 (AUTH-001..006), R54 (PRIV-006) |
-| Components §7 API | R33, R40–R46, R49–R51, cross-cutting |
-| Components §8 Frontend | R1–R3, R40–R46, R56, R57 |
-| Components §9 Background Jobs | R20, R24–R27, R38, R53 |
-| Data Models | R4–R19, R32–R43, R49–R53 |
-| Correctness Properties 1–27 | R4,5,10–19,20–39,40–46,51–55 (per-property refs) |
-| Error Handling | R4.3, R24.3, R35, R36.3, R38.2, R55 |
-| Testing Strategy | R21–R23 (contracts), R30/31/54 (security), R57 (a11y), R58 (perf) |
-| Security Design | R4.5, R28, R30, R31, R45.4, R52, R54 |
-| Privacy & Data Control | R7, R49–R53 |
-| Reliability & Graceful Degradation | R55, R56 |
-| Observability | R24, R47, R48 |
+| Design area                                                 | Requirements                                                      |
+| ----------------------------------------------------------- | ----------------------------------------------------------------- |
+| Overview / capability map                                   | R1–R58 (all)                                                      |
+| Architecture (monorepo, modules, ingestion flow)            | SRC-001, RES-001, OPP-001..008                                    |
+| Components §1 Connector Framework                           | R20–R23 (SRC-001..004)                                            |
+| Components §2 SafeFetcher                                   | R23.3, R27, R30, R31 (SEC-001/002, SRC-008)                       |
+| Components §3 Normalization / §4 Dedup / §5 Canonical types | R32–R37 (OPP-001..006)                                            |
+| Components §6 Auth & Authorization                          | R4–R9 (AUTH-001..006), R54 (PRIV-006)                             |
+| Components §7 API                                           | R33, R40–R46, R49–R51, cross-cutting                              |
+| Components §8 Frontend                                      | R1–R3, R40–R46, R56, R57                                          |
+| Components §9 Background Jobs                               | R20, R24–R27, R38, R53                                            |
+| Data Models                                                 | R4–R19, R32–R43, R49–R53                                          |
+| Correctness Properties 1–27                                 | R4,5,10–19,20–39,40–46,51–55 (per-property refs)                  |
+| Error Handling                                              | R4.3, R24.3, R35, R36.3, R38.2, R55                               |
+| Testing Strategy                                            | R21–R23 (contracts), R30/31/54 (security), R57 (a11y), R58 (perf) |
+| Security Design                                             | R4.5, R28, R30, R31, R45.4, R52, R54                              |
+| Privacy & Data Control                                      | R7, R49–R53                                                       |
+| Reliability & Graceful Degradation                          | R55, R56                                                          |
+| Observability                                               | R24, R47, R48                                                     |
 
 ### Future extension points (out-of-scope specs)
 

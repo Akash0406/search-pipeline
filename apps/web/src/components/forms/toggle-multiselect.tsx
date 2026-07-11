@@ -41,7 +41,12 @@ export function ToggleMultiSelect<T extends string>({
   };
 
   return (
-    <div className="space-y-1.5" role="group" aria-labelledby={`${id}-label`} aria-describedby={descriptionId}>
+    <div
+      className="space-y-1.5"
+      role="group"
+      aria-labelledby={`${id}-label`}
+      aria-describedby={descriptionId}
+    >
       <span id={`${id}-label`} className="text-sm font-medium">
         {label}
       </span>

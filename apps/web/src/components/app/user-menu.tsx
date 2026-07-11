@@ -21,7 +21,10 @@ import { apiFetch, ApiError } from '@/lib/api/client';
 import { useMe } from '@/lib/api/hooks';
 
 function initials(source: string): string {
-  const parts = source.replace(/@.*/, '').split(/[.\s_-]+/).filter(Boolean);
+  const parts = source
+    .replace(/@.*/, '')
+    .split(/[.\s_-]+/)
+    .filter(Boolean);
   const chars = parts.slice(0, 2).map((p) => p[0] ?? '');
   return (chars.join('') || source[0] || '?').toUpperCase();
 }

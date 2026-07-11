@@ -80,11 +80,7 @@ export class UserService {
       }
 
       // Link to an existing user with the same verified email, else create one.
-      const [existingUser] = await tx
-        .select()
-        .from(users)
-        .where(eq(users.email, email))
-        .limit(1);
+      const [existingUser] = await tx.select().from(users).where(eq(users.email, email)).limit(1);
 
       let userId: string;
       let isNewUser = false;
@@ -119,11 +115,7 @@ export class UserService {
   async findOrCreateByEmail(rawEmail: string): Promise<ResolvedUser> {
     const email = UserService.normalizeEmail(rawEmail);
     return this.db.transaction(async (tx) => {
-      const [existingUser] = await tx
-        .select()
-        .from(users)
-        .where(eq(users.email, email))
-        .limit(1);
+      const [existingUser] = await tx.select().from(users).where(eq(users.email, email)).limit(1);
 
       if (existingUser) {
         if (existingUser.emailVerifiedAt === null) {

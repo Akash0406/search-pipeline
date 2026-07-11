@@ -13,12 +13,7 @@
  */
 export const TESTING_PACKAGE = '@careerstack/testing' as const;
 
-export {
-  fcConfig,
-  MIN_PROPERTY_RUNS,
-  assertProperty,
-  propertyTest,
-} from './property.js';
+export { fcConfig, MIN_PROPERTY_RUNS, assertProperty, propertyTest } from './property.js';
 
 export { createFixtureLoader, type FixtureLoader } from './fixtures.js';
 

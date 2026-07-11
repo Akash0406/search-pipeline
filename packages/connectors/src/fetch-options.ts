@@ -10,10 +10,7 @@ import type { Checkpoint, ConnectorContext, SafeFetchOptions } from './types.js'
 
 /** Content-type allow-sets used by the connectors. */
 export const JSON_CONTENT_TYPES = ['application/json'] as const;
-export const HTML_CONTENT_TYPES = [
-  'text/html',
-  'application/xhtml+xml',
-] as const;
+export const HTML_CONTENT_TYPES = ['text/html', 'application/xhtml+xml'] as const;
 export const JSONLD_CONTENT_TYPES = [
   'text/html',
   'application/xhtml+xml',
@@ -49,11 +46,7 @@ interface BuildFetchOptionsInput {
  * Read a positive-integer bound from `ctx.config.fetchBounds`, falling back to
  * the supplied default. Invalid/absent config never widens a bound.
  */
-function boundFromConfig(
-  ctx: ConnectorContext,
-  key: keyof FetchBounds,
-  fallback: number,
-): number {
+function boundFromConfig(ctx: ConnectorContext, key: keyof FetchBounds, fallback: number): number {
   const bounds = ctx.config['fetchBounds'];
   if (bounds && typeof bounds === 'object') {
     const candidate = (bounds as Record<string, unknown>)[key];

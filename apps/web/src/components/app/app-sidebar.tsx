@@ -94,7 +94,10 @@ export function AppSidebar({
         variant="ghost"
         size="sm"
         onClick={onToggleCollapse}
-        className={cn('justify-start gap-3 text-sidebar-foreground/80', collapsed && 'justify-center')}
+        className={cn(
+          'justify-start gap-3 text-sidebar-foreground/80',
+          collapsed && 'justify-center',
+        )}
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         aria-pressed={collapsed}
       >

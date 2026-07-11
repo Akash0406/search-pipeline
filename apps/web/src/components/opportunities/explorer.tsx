@@ -22,11 +22,7 @@ import { ExplorerToolbar, type ViewMode } from './explorer-toolbar';
 import { OpportunityCard } from './opportunity-card';
 import { OpportunityRow } from './opportunity-row';
 import { OpportunitiesTable } from './opportunities-table';
-import {
-  FilteredNoResultsState,
-  FirstUseEmptyState,
-  ResultsSkeleton,
-} from './result-states';
+import { FilteredNoResultsState, FirstUseEmptyState, ResultsSkeleton } from './result-states';
 
 const VIEW_STORAGE_KEY = 'careerstack:explorer-view';
 
@@ -133,10 +129,7 @@ export function OpportunityExplorer() {
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
       {/* Desktop sticky filter sidebar. */}
-      <aside
-        className="hidden w-64 shrink-0 lg:block lg:sticky lg:top-20"
-        aria-label="Filters"
-      >
+      <aside className="hidden w-64 shrink-0 lg:block lg:sticky lg:top-20" aria-label="Filters">
         <FilterPanel state={state} setField={setField} />
       </aside>
 

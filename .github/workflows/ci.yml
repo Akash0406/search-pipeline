@@ -1,0 +1,68 @@
+name: CI
+
+# Runs on every pull request and on pushes to the default branch. Concurrency
+# cancels superseded runs on the same ref so PR pushes don't queue up.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Offline-safe default so `drizzle-kit generate` and config loading never
+  # depend on a live database in CI (generate reads the schema files only).
+  DATABASE_URL: postgresql://careerstack:careerstack@localhost:5432/careerstack
+
+jobs:
+  verify:
+    name: Lint, typecheck, build, test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Format check
+        run: pnpm run format:check
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Test
+        # `turbo run test` only runs the task for packages that define it;
+        # packages without tests are skipped, so this is a clean no-op for them.
+        run: pnpm run test
+
+      - name: Validate migrations (no uncommitted schema drift)
+        # Regenerate migrations from the Drizzle schema and fail if the working
+        # tree changed — i.e. the committed migrations are out of date.
+        run: |
+          pnpm --filter @careerstack/database run generate
+          if ! git diff --exit-code -- packages/database/migrations; then
+            echo "::error::Uncommitted migration drift detected. Run 'pnpm --filter @careerstack/database run generate' and commit the result."
+            exit 1
+          fi

@@ -7,6 +7,7 @@ import { API_BASE_URL } from './client';
 import { opportunityKeys } from './opportunities';
 import { adminKeys } from './admin';
 import { privacyKeys } from './privacy';
+import { connectionKeys } from './connections';
 
 /** Backoff bounds for manual reconnection after a stream error. */
 const MIN_BACKOFF_MS = 1_000;
@@ -34,10 +35,12 @@ export function useLiveUpdates({ enabled = true }: { enabled?: boolean } = {}): 
     (event: LiveEvent) => {
       switch (event.type) {
         case 'run.status':
-          // A connector run changed — refresh admin health/runs and, since
-          // ingestion may have produced/updated rows, the explorer too.
+          // A connector run changed — refresh admin health/runs, the user's own
+          // connection list (status/last-run), and, since ingestion may have
+          // produced/updated rows, the explorer too.
           void queryClient.invalidateQueries({ queryKey: adminKeys.connectorHealth });
           void queryClient.invalidateQueries({ queryKey: adminKeys.runs });
+          void queryClient.invalidateQueries({ queryKey: connectionKeys.all });
           void queryClient.invalidateQueries({ queryKey: opportunityKeys.all });
           break;
         case 'opportunity.changed':

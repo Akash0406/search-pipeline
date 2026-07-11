@@ -22,6 +22,7 @@
   "dependencies": {
     "@careerstack/auth": "workspace:*",
     "@careerstack/config": "workspace:*",
+    "@careerstack/connectors": "workspace:*",
     "@careerstack/contracts": "workspace:*",
     "@careerstack/database": "workspace:*",
     "@careerstack/observability": "workspace:*",

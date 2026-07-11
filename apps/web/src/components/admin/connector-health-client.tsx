@@ -137,10 +137,7 @@ function ConnectorHealthSection() {
           ))}
         </div>
       ) : query.isError ? (
-        <ErrorState
-          title="Couldn’t load connector health"
-          onRetry={() => void query.refetch()}
-        />
+        <ErrorState title="Couldn’t load connector health" onRetry={() => void query.refetch()} />
       ) : items.length === 0 ? (
         <EmptyState
           icon={Activity}
@@ -238,7 +235,7 @@ function RecentRunsSection() {
               <Td className={run.itemsFailed > 0 ? 'font-medium text-destructive' : ''}>
                 {run.itemsFailed}
               </Td>
-              <Td className="max-w-xs truncate text-muted-foreground" >
+              <Td className="max-w-xs truncate text-muted-foreground">
                 {run.failureReason ?? '—'}
               </Td>
             </tr>

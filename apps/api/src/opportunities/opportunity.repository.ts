@@ -238,10 +238,7 @@ export class OpportunityRepository {
           eq(opportunityUserState.userId, userId),
         ),
       )
-      .leftJoin(
-        opportunityContent,
-        eq(opportunityContent.opportunityId, opportunities.id),
-      )
+      .leftJoin(opportunityContent, eq(opportunityContent.opportunityId, opportunities.id))
       .where(eq(opportunities.id, id))
       .limit(1);
 
@@ -291,11 +288,7 @@ export class OpportunityRepository {
   }
 
   /** Upsert the caller's overlay to `saved`/`dismissed` (Req 43.1, 43.2). */
-  async setUserState(
-    userId: string,
-    opportunityId: string,
-    state: StoredUserState,
-  ): Promise<void> {
+  async setUserState(userId: string, opportunityId: string, state: StoredUserState): Promise<void> {
     await this.db
       .insert(opportunityUserState)
       .values({ userId, opportunityId, state })
@@ -391,9 +384,7 @@ export class OpportunityRepository {
 
     if (state.search) {
       const like = `%${escapeLike(state.search)}%`;
-      conditions.push(
-        or(ilike(opportunities.title, like), ilike(opportunities.company, like)),
-      );
+      conditions.push(or(ilike(opportunities.title, like), ilike(opportunities.company, like)));
     }
 
     if (state.location) {
@@ -486,10 +477,7 @@ export class OpportunityRepository {
    * ordering. Handles the `closing_at asc nulls last` region split so the null
    * tail paginates correctly.
    */
-  private buildKeysetCondition(
-    sortKey: ExplorerSortKey,
-    cursor: CursorPayload,
-  ): SQL | undefined {
+  private buildKeysetCondition(sortKey: ExplorerSortKey, cursor: CursorPayload): SQL | undefined {
     const cfg = SORT_CONFIG[sortKey];
     const col = cfg.column;
     const id = opportunities.id;
@@ -512,10 +500,7 @@ export class OpportunityRepository {
     if (cfg.direction === 'desc') {
       return or(lt(col, cv), and(eq(col, cv), lt(id, cursor.id))) as SQL;
     }
-    return or(
-      sql`${col} > ${cv}`,
-      and(eq(col, cv), sql`${id} > ${cursor.id}`),
-    ) as SQL;
+    return or(sql`${col} > ${cv}`, and(eq(col, cv), sql`${id} > ${cursor.id}`)) as SQL;
   }
 
   /** The cursor sort-value for the last row of a page (epoch ms | null). */

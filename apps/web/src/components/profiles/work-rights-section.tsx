@@ -85,7 +85,8 @@ export function WorkRightsSection({
           {/* Explainer shown BEFORE collection (Req 16.2). */}
           <p className="text-sm text-muted-foreground">
             Telling us your work-rights lets us filter out roles you are not eligible for — for
-            example, positions that can&apos;t offer visa sponsorship. It&apos;s completely optional.
+            example, positions that can&apos;t offer visa sponsorship. It&apos;s completely
+            optional.
           </p>
           <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Lock className="size-3.5" aria-hidden />

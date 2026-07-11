@@ -50,8 +50,7 @@ export function DeleteAccountSection() {
       },
       onError: (error) => {
         toast.error('Couldn’t delete your account', {
-          description:
-            error instanceof ApiError ? error.message : 'Please try again in a moment.',
+          description: error instanceof ApiError ? error.message : 'Please try again in a moment.',
         });
       },
     });

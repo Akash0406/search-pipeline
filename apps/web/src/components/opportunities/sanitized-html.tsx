@@ -12,13 +12,7 @@ import { cn } from '@careerstack/ui';
  *
  * Do NOT pass unsanitized/user-controlled HTML here.
  */
-export function SanitizedHtml({
-  html,
-  className,
-}: {
-  html: string;
-  className?: string;
-}) {
+export function SanitizedHtml({ html, className }: { html: string; className?: string }) {
   return (
     <div
       className={cn(

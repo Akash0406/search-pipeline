@@ -8,12 +8,7 @@
  * Configure the param name with `@OwnerParam('userId')`; without it the guard
  * is a no-op and the repository layer remains the enforcement point.
  */
-import {
-  ForbiddenException,
-  Injectable,
-  SetMetadata,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable, SetMetadata, UnauthorizedException } from '@nestjs/common';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import type { AuthenticatedRequest } from '../request-context.js';

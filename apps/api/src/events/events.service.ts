@@ -15,12 +15,7 @@
  * (graceful degradation, Req 55); if Redis is unavailable, in-process events
  * still flow.
  */
-import {
-  Inject,
-  Injectable,
-  type OnModuleDestroy,
-  type OnModuleInit,
-} from '@nestjs/common';
+import { Inject, Injectable, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common';
 import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Redis } from 'ioredis';

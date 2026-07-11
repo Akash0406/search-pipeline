@@ -16,15 +16,7 @@
  * `decodeExplorerState` codec (unknown/invalid params are ignored), and cursor
  * pagination params are validated against the shared schema.
  */
-import {
-  BadRequestException,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { BadRequestException, Controller, Delete, Get, Param, Put, Query } from '@nestjs/common';
 import {
   decodeExplorerState,
   paginationQuerySchema,

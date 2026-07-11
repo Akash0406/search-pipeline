@@ -87,10 +87,7 @@ export {
 export { GreenhouseConnector, mapGreenhouseJob } from './connectors/greenhouse.js';
 export { LeverConnector, mapLeverPosting } from './connectors/lever.js';
 export { AshbyConnector, mapAshbyJob } from './connectors/ashby.js';
-export {
-  JsonLdConnector,
-  JSONLD_NO_POSTING_MESSAGE,
-} from './connectors/jsonld-connector.js';
+export { JsonLdConnector, JSONLD_NO_POSTING_MESSAGE } from './connectors/jsonld-connector.js';
 export {
   ManualUrlConnector,
   parseHtmlBestEffort,

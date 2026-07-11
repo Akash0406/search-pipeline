@@ -92,10 +92,7 @@ export function looksRemote(text: string): boolean {
  * Parse one free-text location string. `remoteOverride` forces `isRemote`
  * (e.g. when the work-arrangement fact already resolved to `remote`).
  */
-export function parseLocation(
-  raw: string,
-  remoteOverride = false,
-): StructuredLocation {
+export function parseLocation(raw: string, remoteOverride = false): StructuredLocation {
   const isRemote = remoteOverride || looksRemote(raw);
   const segments = raw
     .split(/[,/|]/)
@@ -147,10 +144,7 @@ function titleCase(input: string): string {
  * `city|region|country|remote`, lower-cased. An empty set of locations yields
  * `remote` when remote, else the empty string.
  */
-export function locationKey(
-  locations: readonly StructuredLocation[],
-  isRemote: boolean,
-): string {
+export function locationKey(locations: readonly StructuredLocation[], isRemote: boolean): string {
   const primary = locations[0];
   if (!primary) return isRemote ? 'remote' : '';
   const remoteFlag = primary.isRemote || isRemote ? 'remote' : '';

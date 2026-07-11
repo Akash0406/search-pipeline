@@ -23,13 +23,7 @@ export const sourceTypeSchema = z.enum([
 export type SourceType = z.infer<typeof sourceTypeSchema>;
 
 /** How a fact was extracted (provenance / evidence). */
-export const extractionMethodSchema = z.enum([
-  'STRUCTURED_DATA',
-  'RULE',
-  'PARSER',
-  'LLM',
-  'USER',
-]);
+export const extractionMethodSchema = z.enum(['STRUCTURED_DATA', 'RULE', 'PARSER', 'LLM', 'USER']);
 export type ExtractionMethod = z.infer<typeof extractionMethodSchema>;
 
 /** Where/how a role is worked. */
@@ -99,12 +93,7 @@ export const userStateSchema = z.enum(['none', 'saved', 'dismissed']);
 export type UserState = z.infer<typeof userStateSchema>;
 
 /** Health of a connection/connector (Req 24, 47). */
-export const healthStatusSchema = z.enum([
-  'healthy',
-  'degraded',
-  'failing',
-  'unknown',
-]);
+export const healthStatusSchema = z.enum(['healthy', 'degraded', 'failing', 'unknown']);
 export type HealthStatus = z.infer<typeof healthStatusSchema>;
 
 /** Theme preference (Req 3.5). */

@@ -160,8 +160,6 @@ export class S3ArtifactStore implements ArtifactStore {
   }
 
   async delete(storageKey: string): Promise<void> {
-    await this.client.send(
-      new DeleteObjectCommand({ Bucket: this.bucket, Key: storageKey }),
-    );
+    await this.client.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: storageKey }));
   }
 }

@@ -29,12 +29,7 @@ export async function runRetentionCleanup(
       storageKey: schema.rawArtifacts.storageKey,
     })
     .from(schema.rawArtifacts)
-    .where(
-      and(
-        isNull(schema.rawArtifacts.deletedAt),
-        lt(schema.rawArtifacts.retentionUntil, now),
-      ),
-    )
+    .where(and(isNull(schema.rawArtifacts.deletedAt), lt(schema.rawArtifacts.retentionUntil, now)))
     .orderBy(asc(schema.rawArtifacts.retentionUntil))
     .limit(limit);
 

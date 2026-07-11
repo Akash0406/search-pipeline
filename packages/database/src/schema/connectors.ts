@@ -181,9 +181,7 @@ export const parserDefinitions = pgTable(
     active: boolean('active').notNull().default(true),
     createdAt: createdAt(),
   },
-  (t) => [
-    uniqueIndex('parser_definitions_source_version_unique').on(t.sourceType, t.version),
-  ],
+  (t) => [uniqueIndex('parser_definitions_source_version_unique').on(t.sourceType, t.version)],
 );
 
 /** A parse attempt and its outcome (Req 35.3, 48.1). */

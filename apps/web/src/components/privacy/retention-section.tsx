@@ -65,9 +65,7 @@ export function RetentionSection() {
               <div className="rounded-lg border p-3">
                 <dt className="text-xs text-muted-foreground">Your override</dt>
                 <dd className="mt-1 font-medium">
-                  {policy.userOverrideDays === null
-                    ? 'None'
-                    : formatDays(policy.userOverrideDays)}
+                  {policy.userOverrideDays === null ? 'None' : formatDays(policy.userOverrideDays)}
                 </dd>
               </div>
               <div className="rounded-lg border p-3">

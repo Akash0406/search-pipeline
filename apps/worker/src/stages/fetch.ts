@@ -29,11 +29,7 @@ function retentionUntil(retentionDays: number, now: Date): Date {
 }
 
 /** Merge the fresh validators for a URL into the connection checkpoint. */
-function advanceCheckpoint(
-  checkpoint: Checkpoint,
-  url: string,
-  result: FetchResult,
-): Checkpoint {
+function advanceCheckpoint(checkpoint: Checkpoint, url: string, result: FetchResult): Checkpoint {
   const etags = { ...(checkpoint.etags ?? {}) };
   const lastModified = { ...(checkpoint.lastModified ?? {}) };
   if (result.etag) etags[url] = result.etag;

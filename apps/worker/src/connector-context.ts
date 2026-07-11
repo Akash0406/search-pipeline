@@ -8,10 +8,7 @@
  * `AbortSignal` for graceful shutdown.
  */
 
-import {
-  CHECKPOINT_STORE_CONFIG_KEY,
-  type ConnectorContext,
-} from '@careerstack/connectors';
+import { CHECKPOINT_STORE_CONFIG_KEY, type ConnectorContext } from '@careerstack/connectors';
 import type { PipelineContext } from './context.js';
 
 export interface BuildConnectorContextInput {
@@ -25,9 +22,7 @@ export interface BuildConnectorContextInput {
 }
 
 /** Assemble a {@link ConnectorContext} for a single connection/stage. */
-export function buildConnectorContext(
-  input: BuildConnectorContextInput,
-): ConnectorContext {
+export function buildConnectorContext(input: BuildConnectorContextInput): ConnectorContext {
   const config: Record<string, unknown> = {
     ...input.connectionConfig,
     [CHECKPOINT_STORE_CONFIG_KEY]: input.pipeline.checkpointStore,

@@ -107,10 +107,7 @@ export function cleanString(value: unknown): string | undefined {
  * fetched payload (e.g. one job sliced out of a board list, or one JSON-LD node
  * extracted from a page). No network access occurs.
  */
-export function syntheticJsonArtifact(
-  value: unknown,
-  source: FetchResult,
-): FetchResult {
+export function syntheticJsonArtifact(value: unknown, source: FetchResult): FetchResult {
   const body = Buffer.from(JSON.stringify(value), 'utf8');
   return {
     finalUrl: source.finalUrl,
@@ -121,9 +118,7 @@ export function syntheticJsonArtifact(
     body,
     byteSize: body.byteLength,
     ...(source.etag !== undefined ? { etag: source.etag } : {}),
-    ...(source.lastModified !== undefined
-      ? { lastModified: source.lastModified }
-      : {}),
+    ...(source.lastModified !== undefined ? { lastModified: source.lastModified } : {}),
   };
 }
 
@@ -135,10 +130,7 @@ export function syntheticJsonArtifact(
  * fall back to a deterministic content-addressable id derived from the final
  * URL and body — mirroring the `raw_artifacts` content-hash identity.
  */
-export function resolveRawArtifactId(
-  ctx: ConnectorContext,
-  artifact: FetchResult,
-): string {
+export function resolveRawArtifactId(ctx: ConnectorContext, artifact: FetchResult): string {
   const injected = ctx.config['rawArtifactId'];
   if (typeof injected === 'string' && injected.trim().length > 0) {
     return injected.trim();

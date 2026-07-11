@@ -23,19 +23,55 @@ export const metadata: Metadata = {
 };
 
 const AVAILABLE = [
-  { icon: Radar, title: 'Real-time discovery', body: 'Polite, continuous fetching from official and public sources keeps your list fresh without you lifting a finger.' },
-  { icon: Copy, title: 'Smart deduplication', body: 'The same role across multiple boards collapses into one canonical opportunity, with every source preserved for traceability.' },
-  { icon: ShieldCheck, title: 'Eligibility signals', body: 'Surface work-rights and requirement mismatches early so you focus on roles you can actually take.' },
-  { icon: CalendarDays, title: 'Events & deadlines', body: 'Keep closing dates and hiring events in view so nothing slips past you.' },
-  { icon: Star, title: 'Watchlists', body: 'Follow companies you care about and see their new roles as they appear.' },
-  { icon: ClipboardList, title: 'Operational analytics', body: 'Understand source health, freshness, and where your opportunities come from.' },
+  {
+    icon: Radar,
+    title: 'Real-time discovery',
+    body: 'Polite, continuous fetching from official and public sources keeps your list fresh without you lifting a finger.',
+  },
+  {
+    icon: Copy,
+    title: 'Smart deduplication',
+    body: 'The same role across multiple boards collapses into one canonical opportunity, with every source preserved for traceability.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Eligibility signals',
+    body: 'Surface work-rights and requirement mismatches early so you focus on roles you can actually take.',
+  },
+  {
+    icon: CalendarDays,
+    title: 'Events & deadlines',
+    body: 'Keep closing dates and hiring events in view so nothing slips past you.',
+  },
+  {
+    icon: Star,
+    title: 'Watchlists',
+    body: 'Follow companies you care about and see their new roles as they appear.',
+  },
+  {
+    icon: ClipboardList,
+    title: 'Operational analytics',
+    body: 'Understand source health, freshness, and where your opportunities come from.',
+  },
 ];
 
 const ROADMAP = [
-  { icon: Sparkles, title: 'AI relevance', body: 'Semantic ranking tuned to your profile and history.' },
+  {
+    icon: Sparkles,
+    title: 'AI relevance',
+    body: 'Semantic ranking tuned to your profile and history.',
+  },
   { icon: Bell, title: 'Smart alerts', body: 'Get notified the instant a strong match appears.' },
-  { icon: KanbanSquare, title: 'Application tracking', body: 'A Kanban pipeline for every application.' },
-  { icon: FileText, title: 'Resume tailoring', body: 'Draft targeted resumes and cover letters per role.' },
+  {
+    icon: KanbanSquare,
+    title: 'Application tracking',
+    body: 'A Kanban pipeline for every application.',
+  },
+  {
+    icon: FileText,
+    title: 'Resume tailoring',
+    body: 'Draft targeted resumes and cover letters per role.',
+  },
 ];
 
 export default function FeaturesPage() {

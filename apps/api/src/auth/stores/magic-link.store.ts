@@ -9,11 +9,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, isNull } from 'drizzle-orm';
 import type { Database } from '@careerstack/database';
 import { magicLinkTokens } from '@careerstack/database';
-import type {
-  CreateMagicLinkInput,
-  MagicLinkStore,
-  StoredMagicLink,
-} from '@careerstack/auth';
+import type { CreateMagicLinkInput, MagicLinkStore, StoredMagicLink } from '@careerstack/auth';
 import { DB } from '../../common/di-tokens.js';
 
 @Injectable()

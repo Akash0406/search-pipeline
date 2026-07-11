@@ -28,11 +28,7 @@ export const explorerSortKeySchema = z.enum([
 export type ExplorerSortKey = z.infer<typeof explorerSortKeySchema>;
 
 /** Per-user state filter (Req 41.3). */
-export const explorerStateFilterSchema = z.enum([
-  'saved',
-  'dismissed',
-  'needsReview',
-]);
+export const explorerStateFilterSchema = z.enum(['saved', 'dismissed', 'needsReview']);
 export type ExplorerStateFilter = z.infer<typeof explorerStateFilterSchema>;
 
 /** Freshness window filter (Req 41.4). */

@@ -254,11 +254,7 @@ export class RoleProfileRepository extends OwnershipScopedRepository<typeof role
    * Set a profile's lifecycle status ('active' | 'paused') if owned. Returns
    * false when the profile is not owned (deny).
    */
-  async setStatus(
-    id: string,
-    ownerId: string,
-    status: 'active' | 'paused',
-  ): Promise<boolean> {
+  async setStatus(id: string, ownerId: string, status: 'active' | 'paused'): Promise<boolean> {
     const rows = await this.db
       .update(roleProfiles)
       .set({ status, updatedAt: new Date() })
@@ -316,7 +312,11 @@ export class RoleProfileRepository extends OwnershipScopedRepository<typeof role
       await tx.delete(roleProfileTitles).where(eq(roleProfileTitles.roleProfileId, profileId));
       if (children.titles.length > 0) {
         await tx.insert(roleProfileTitles).values(
-          children.titles.map((t) => ({ roleProfileId: profileId, kind: t.kind, value: t.value })),
+          children.titles.map((t) => ({
+            roleProfileId: profileId,
+            kind: t.kind,
+            value: t.value,
+          })),
         );
       }
     }
@@ -325,7 +325,11 @@ export class RoleProfileRepository extends OwnershipScopedRepository<typeof role
       await tx.delete(roleProfileSkills).where(eq(roleProfileSkills.roleProfileId, profileId));
       if (children.skills.length > 0) {
         await tx.insert(roleProfileSkills).values(
-          children.skills.map((s) => ({ roleProfileId: profileId, kind: s.kind, value: s.value })),
+          children.skills.map((s) => ({
+            roleProfileId: profileId,
+            kind: s.kind,
+            value: s.value,
+          })),
         );
       }
     }

@@ -11,10 +11,7 @@
 import { z } from 'zod';
 import { paginated } from './common/envelopes.js';
 import { userStateSchema } from './common/enums.js';
-import {
-  opportunityDetailSchema,
-  opportunityListItemSchema,
-} from './common/opportunity.js';
+import { opportunityDetailSchema, opportunityListItemSchema } from './common/opportunity.js';
 
 /** `GET /opportunities` — cursor-paginated, description-free list. */
 export const opportunityListResponseSchema = paginated(opportunityListItemSchema);
@@ -32,6 +29,4 @@ export const opportunityUserStateResponseSchema = z.object({
   opportunityId: z.string(),
   state: userStateSchema,
 });
-export type OpportunityUserStateResponse = z.infer<
-  typeof opportunityUserStateResponseSchema
->;
+export type OpportunityUserStateResponse = z.infer<typeof opportunityUserStateResponseSchema>;

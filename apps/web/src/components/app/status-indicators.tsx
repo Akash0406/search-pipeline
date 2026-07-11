@@ -60,7 +60,11 @@ export function OnlineIndicator() {
  * to `/admin/connector-health` + SSE in a later task; for now it renders a
  * neutral, accessible placeholder so the shell layout is complete.
  */
-export function SourceHealthIndicator({ status = 'unknown' as const }: { status?: 'ok' | 'degraded' | 'unknown' }) {
+export function SourceHealthIndicator({
+  status = 'unknown' as const,
+}: {
+  status?: 'ok' | 'degraded' | 'unknown';
+}) {
   const config = {
     ok: { icon: Activity, label: 'Sources healthy', className: 'text-success' },
     degraded: { icon: CloudOff, label: 'Some sources degraded', className: 'text-warning' },

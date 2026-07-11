@@ -72,9 +72,7 @@ function EvidenceItem({ evidence }: { evidence: Evidence }) {
         <span className="font-mono text-xs font-medium">{evidence.field}</span>
         <Badge variant="outline">{EXTRACTION_METHOD_LABELS[evidence.method]}</Badge>
         {confidence ? <span className="text-xs text-muted-foreground">{confidence}</span> : null}
-        {evidence.uncertain ? (
-          <Badge variant="warning">Uncertain</Badge>
-        ) : null}
+        {evidence.uncertain ? <Badge variant="warning">Uncertain</Badge> : null}
       </div>
       {evidence.sourceText ? (
         <blockquote className="mt-2 border-l-2 pl-3 text-sm text-muted-foreground">

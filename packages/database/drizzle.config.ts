@@ -17,8 +17,7 @@ export default defineConfig({
   dialect: 'postgresql',
   dbCredentials: {
     url:
-      process.env.DATABASE_URL ??
-      'postgresql://careerstack:careerstack@localhost:5432/careerstack',
+      process.env.DATABASE_URL ?? 'postgresql://careerstack:careerstack@localhost:5432/careerstack',
   },
   strict: true,
   verbose: true,

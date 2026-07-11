@@ -28,15 +28,9 @@ export function normalizeSalary(parsed: ParsedSalary): SalaryRange | undefined {
     typeof parsed.currency === 'string' && parsed.currency.trim().length > 0
       ? parsed.currency.trim().toUpperCase()
       : undefined;
-  const period =
-    typeof parsed.period === 'string' ? mapSalaryPeriod(parsed.period) : undefined;
+  const period = typeof parsed.period === 'string' ? mapSalaryPeriod(parsed.period) : undefined;
 
-  if (
-    min === undefined &&
-    max === undefined &&
-    currency === undefined &&
-    period === undefined
-  ) {
+  if (min === undefined && max === undefined && currency === undefined && period === undefined) {
     return undefined;
   }
 

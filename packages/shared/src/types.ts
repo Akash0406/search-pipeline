@@ -12,11 +12,7 @@
  * Drizzle/ioredis.
  */
 
-import type {
-  ClosureSignal,
-  ExtractionMethod,
-  SourceType,
-} from '@careerstack/connectors';
+import type { ClosureSignal, ExtractionMethod, SourceType } from '@careerstack/connectors';
 
 export type { ClosureSignal, ExtractionMethod, SourceType };
 
@@ -26,22 +22,10 @@ export type { ClosureSignal, ExtractionMethod, SourceType };
 export type WorkArrangement = 'on_site' | 'hybrid' | 'remote';
 
 /** Employment relationship. */
-export type EmploymentType =
-  | 'full_time'
-  | 'part_time'
-  | 'contract'
-  | 'internship'
-  | 'temporary';
+export type EmploymentType = 'full_time' | 'part_time' | 'contract' | 'internship' | 'temporary';
 
 /** Role level. */
-export type Seniority =
-  | 'intern'
-  | 'junior'
-  | 'mid'
-  | 'senior'
-  | 'lead'
-  | 'principal'
-  | 'executive';
+export type Seniority = 'intern' | 'junior' | 'mid' | 'senior' | 'lead' | 'principal' | 'executive';
 
 /** Pay period for a salary range. */
 export type SalaryPeriod = 'hour' | 'day' | 'month' | 'year';
@@ -215,8 +199,7 @@ export interface CanonicalCandidate extends DedupCandidate {
  * Req 35 / Property 17).
  */
 export type NormalizationResult =
-  | { ok: true; candidate: CanonicalCandidate }
-  | { ok: false; failure: NormalizationFailure };
+  { ok: true; candidate: CanonicalCandidate } | { ok: false; failure: NormalizationFailure };
 
 /** Why a parsed record failed canonical-schema validation (Req 35.3). */
 export interface NormalizationFailure {

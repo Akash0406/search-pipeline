@@ -41,10 +41,7 @@ export function StatusBadge({
   return (
     <Badge variant={variant} className={cn('gap-1.5', className)} {...props}>
       {hideDot ? null : (
-        <span
-          aria-hidden
-          className="size-1.5 rounded-full bg-current opacity-70"
-        />
+        <span aria-hidden className="size-1.5 rounded-full bg-current opacity-70" />
       )}
       {label}
     </Badge>

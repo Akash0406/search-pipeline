@@ -1,30 +1,22 @@
 import type { Metadata } from 'next';
-import { Building2 } from 'lucide-react';
-import { Button } from '@careerstack/ui';
-import { PageHeader } from '@/components/app/page-header';
-import { EmptyState } from '@/components/common/states';
+import * as React from 'react';
+import { Skeleton } from '@careerstack/ui';
+import { SourcesManager } from '@/components/sources/sources-manager';
 
 export const metadata: Metadata = {
   title: 'Sources',
 };
 
 /**
- * Sources/connections placeholder. Connection management, runs, and manual URL
- * submission are built in a later task; this route provides the empty state.
+ * Sources/connections surface (Req 20–26, Design §8 `/app/sources`). The client
+ * `SourcesManager` owns data, the required empty/loading/error states, the
+ * add-source wizard, run history, and the manual-URL flow. Wrapped in Suspense
+ * because it reads search params for deep-linked quick actions.
  */
 export default function SourcesPage() {
   return (
-    <>
-      <PageHeader
-        title="Sources"
-        description="Company career pages and ATS boards you're tracking for new opportunities."
-      />
-      <EmptyState
-        icon={Building2}
-        title="No connected sources"
-        description="Add a company's Greenhouse, Lever, or Ashby board — or a career-page URL — and we'll discover and keep opportunities up to date."
-        action={<Button disabled>Add a source (coming soon)</Button>}
-      />
-    </>
+    <React.Suspense fallback={<Skeleton className="h-96 w-full rounded-xl" />}>
+      <SourcesManager />
+    </React.Suspense>
   );
 }

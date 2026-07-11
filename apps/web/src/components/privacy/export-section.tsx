@@ -74,8 +74,7 @@ export function ExportSection() {
       },
       onError: (error) => {
         toast.error('Couldn’t start the export', {
-          description:
-            error instanceof ApiError ? error.message : 'Please try again in a moment.',
+          description: error instanceof ApiError ? error.message : 'Please try again in a moment.',
         });
       },
     });
@@ -140,11 +139,7 @@ export function ExportSection() {
             ) : null}
 
             {isPreparing ? (
-              <p
-                className="mt-2 text-xs text-muted-foreground"
-                role="status"
-                aria-live="polite"
-              >
+              <p className="mt-2 text-xs text-muted-foreground" role="status" aria-live="polite">
                 Preparing your export… this page updates automatically.
               </p>
             ) : null}

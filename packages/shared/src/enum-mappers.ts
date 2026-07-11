@@ -6,15 +6,14 @@
  * guessing a default.
  */
 
-import type {
-  EmploymentType,
-  SalaryPeriod,
-  Seniority,
-  WorkArrangement,
-} from './types.js';
+import type { EmploymentType, SalaryPeriod, Seniority, WorkArrangement } from './types.js';
 
 function norm(input: string): string {
-  return input.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+  return input
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /** Map work-arrangement text → {@link WorkArrangement}, else `undefined`. */

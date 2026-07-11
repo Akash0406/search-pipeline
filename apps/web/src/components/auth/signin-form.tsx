@@ -2,10 +2,7 @@
 
 import * as React from 'react';
 import { Mail, ShieldCheck } from 'lucide-react';
-import type {
-  GoogleOAuthStartResponse,
-  MagicLinkRequestResponse,
-} from '@careerstack/contracts';
+import type { GoogleOAuthStartResponse, MagicLinkRequestResponse } from '@careerstack/contracts';
 import {
   Button,
   Card,
@@ -180,7 +177,11 @@ export function SignInForm({
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <Button type="submit" className="w-full" disabled={status === 'magic' || email.length === 0}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={status === 'magic' || email.length === 0}
+          >
             {status === 'magic' ? 'Sending link…' : 'Email me a sign-in link'}
           </Button>
         </form>

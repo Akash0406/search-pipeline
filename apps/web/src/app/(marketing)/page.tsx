@@ -375,7 +375,10 @@ export default function LandingPage() {
         <Container>
           <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
             <CardContent className="flex flex-col items-center gap-6 px-6 py-14 text-center">
-              <h2 id="cta-heading" className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+              <h2
+                id="cta-heading"
+                className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl"
+              >
                 Let the right opportunities find you
               </h2>
               <p className="max-w-xl text-muted-foreground">

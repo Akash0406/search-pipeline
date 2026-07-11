@@ -9,7 +9,7 @@
  * nor the URL can leak across users.
  */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { generateCorrelationId } from '@careerstack/observability';
+import { getOrCreateCorrelationId } from '@careerstack/observability';
 import type {
   ExportRequestResponse,
   ExportStatus,
@@ -40,7 +40,10 @@ export class ExportService {
     await this.queue.enqueue({
       exportId: row.id,
       userId,
-      correlationId: generateCorrelationId(),
+      // Propagate the request's correlation id (bound by CorrelationInterceptor)
+      // into the job so the export is traceable API → queue → worker; falls back
+      // to a fresh id outside a request context (Design Architecture).
+      correlationId: getOrCreateCorrelationId(),
     });
     const status = toExportStatus(row.status);
     // Push the initial status immediately so any open SSE stream reflects the

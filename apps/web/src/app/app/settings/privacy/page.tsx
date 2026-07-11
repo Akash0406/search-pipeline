@@ -1,28 +1,25 @@
 import type { Metadata } from 'next';
-import { SlidersHorizontal } from 'lucide-react';
 import { PageHeader } from '@/components/app/page-header';
-import { EmptyState } from '@/components/common/states';
+import { PrivacyClient } from '@/components/privacy/privacy-client';
 
 export const metadata: Metadata = {
   title: 'Privacy & data',
 };
 
 /**
- * Privacy placeholder. Data export, source disconnect, and account deletion
- * flows are built in a later task (14.x); this route provides the empty state.
+ * Privacy & data-control settings (Req 49–53). Export your data, disconnect
+ * sources (opportunities stay accessible), review the retention policy, and
+ * delete specific data or your whole account. All destructive actions require
+ * explicit confirmation; long-running work (export) shows live status.
  */
 export default function PrivacySettingsPage() {
   return (
     <>
       <PageHeader
         title="Privacy & data"
-        description="Export your data, disconnect sources, or delete your account and data."
+        description="Export your data, disconnect sources, review retention, or delete your account and data."
       />
-      <EmptyState
-        icon={SlidersHorizontal}
-        title="Privacy controls are on the way"
-        description="You'll be able to export everything we hold about you, disconnect sources while keeping opportunities accessible, and permanently delete your account."
-      />
+      <PrivacyClient />
     </>
   );
 }

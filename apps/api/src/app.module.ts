@@ -16,6 +16,7 @@ import { RoleProfilesModule } from './role-profiles/role-profiles.module.js';
 import { OpportunitiesModule } from './opportunities/opportunities.module.js';
 import { AdminModule } from './admin/admin.module.js';
 import { PrivacyModule } from './privacy/privacy.module.js';
+import { EventsModule } from './events/events.module.js';
 import { HealthModule } from './health/health.module.js';
 
 @Module({
@@ -26,6 +27,7 @@ import { HealthModule } from './health/health.module.js';
     OpportunitiesModule,
     AdminModule,
     PrivacyModule,
+    EventsModule,
     HealthModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: HttpExceptionFilter }],

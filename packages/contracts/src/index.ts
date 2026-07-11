@@ -21,6 +21,7 @@ export * from './connections.js';
 export * from './opportunities.js';
 export * from './admin.js';
 export * from './privacy.js';
+export * from './events.js';
 
 // Explorer filter/sort state + URL codec
 export * from './explorer.js';

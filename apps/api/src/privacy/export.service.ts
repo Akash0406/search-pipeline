@@ -18,6 +18,7 @@ import type {
 import { ExportRepository, type ExportRow } from './export.repository.js';
 import { ExportQueue } from './export-queue.service.js';
 import { ExportStorage } from './export-storage.service.js';
+import { EventsService } from '../events/events.service.js';
 
 const EXPORT_STATUSES: readonly ExportStatus[] = ['pending', 'processing', 'ready', 'failed'];
 
@@ -30,6 +31,7 @@ export class ExportService {
     private readonly repo: ExportRepository,
     private readonly queue: ExportQueue,
     private readonly storage: ExportStorage,
+    private readonly events: EventsService,
   ) {}
 
   /** Create a pending export and enqueue its assembly (Req 49.1, 49.3). */
@@ -40,7 +42,11 @@ export class ExportService {
       userId,
       correlationId: generateCorrelationId(),
     });
-    return { exportId: row.id, status: toExportStatus(row.status) };
+    const status = toExportStatus(row.status);
+    // Push the initial status immediately so any open SSE stream reflects the
+    // in-progress export without waiting for the worker's first update (Req 56).
+    this.events.emitToUser(userId, { type: 'export.status', exportId: row.id, status });
+    return { exportId: row.id, status };
   }
 
   /** Owner-scoped status; a ready export yields a short-lived signed URL. */

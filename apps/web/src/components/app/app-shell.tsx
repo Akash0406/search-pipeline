@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useMe } from '@/lib/api/hooks';
+import { useLiveUpdates } from '@/lib/api/use-live-updates';
 import { AppSidebar } from './app-sidebar';
 import { AppTopbar } from './app-topbar';
 import { MobileNav } from './mobile-nav';
@@ -20,6 +21,10 @@ const COLLAPSE_STORAGE_KEY = 'cs:sidebar-collapsed';
 export function AppShell({ children }: { children: React.ReactNode }) {
   const me = useMe();
   const isAdmin = me.data?.role === 'admin';
+
+  // Subscribe to live updates (SSE) once authenticated so run status, export
+  // status, and opportunity changes invalidate their caches app-wide (Req 56).
+  useLiveUpdates({ enabled: Boolean(me.data) });
 
   const [collapsed, setCollapsed] = React.useState(false);
   const [commandOpen, setCommandOpen] = React.useState(false);

@@ -315,7 +315,7 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - Fixture → artifact stored → parsed → normalized → deduped → canonical + provenance persisted; provenance and raw-artifact references retained after merge
     - _Requirements: 32.1, 33.1, 37.1, 37.3_
 
-- [ ] 11. Slice 8 — Opportunities module + explorer UI + detail
+- [x] 11. Slice 8 — Opportunities module + explorer UI + detail
   - [x] 11.1 Implement OpportunitiesModule endpoints
     - `GET /opportunities` (filters + sort + cursor, projection excludes `description`), `GET /opportunities/{id}` (full detail + sources + evidence), `PUT/DELETE /opportunities/{id}/save` and `/dismiss` (per-user, ownership-scoped)
     - _Requirements: 40.3, 43.1, 43.2, 43.3, 43.4, 45.1, 45.2, 58.3_
@@ -324,15 +324,15 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - Translate filter/sort DTO into indexed queries (`status,last_updated_at desc`, company, closing_at, first_seen_at, fingerprint, per-user state); cursor pagination
     - _Requirements: 41.1, 41.2, 41.3, 41.4, 41.5, 42.1, 42.2, 42.3, 58.1_
     - _Design: Data Models → Indexing strategy_
-  - [~] 11.3 Build explorer UI (card/list/table)
+  - [x] 11.3 Build explorer UI (card/list/table)
     - Three view modes; switching view preserves filters/sort/result set; paginate/virtualize collections; never fetch descriptions in list; empty/loading/error states
     - _Requirements: 40.1, 40.2, 40.3, 40.4, 56.1_
     - _Design: Frontend §8 (explorer)_
-  - [~] 11.4 Wire filters/sort to URL state + save/dismiss
+  - [x] 11.4 Wire filters/sort to URL state + save/dismiss
     - Filters + sort serialize via `encode/decodeExplorerState`; restore from URL; optimistic per-user save/dismiss with reversal
     - _Requirements: 41.5, 42.2, 43.1, 43.2, 43.3, 44.1, 44.2_
     - _Design: Frontend §8 (URL state)_
-  - [~] 11.5 Build opportunity detail UI
+  - [x] 11.5 Build opportunity detail UI
     - Full info + current status + sanitized description; contributing sources with evidence; first-party contributors marked; external links open session-isolated (`rel="noopener noreferrer" target="_blank"`); reserved region for future match/analysis
     - _Requirements: 45.1, 45.2, 45.3, 45.4, 45.5_
     - _Design: Frontend §8 (opportunity detail)_

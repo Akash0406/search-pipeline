@@ -28,4 +28,9 @@ export class ConnectionRepository extends OwnershipScopedRepository<typeof conne
   async findOwned(id: string, userId: string): Promise<ConnectionRow | null> {
     return this.findByIdForOwner(id, userId) as Promise<ConnectionRow | null>;
   }
+
+  /** List the caller's connections, newest first (ownership-scoped, Req 54.3). */
+  async listOwned(userId: string): Promise<ConnectionRow[]> {
+    return this.listForOwner(userId) as Promise<ConnectionRow[]>;
+  }
 }

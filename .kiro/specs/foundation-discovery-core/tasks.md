@@ -353,7 +353,7 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 13. Slice 9 — Admin connector-health + review queue
-  - [~] 13.1 Implement AdminModule endpoints
+  - [x] 13.1 Implement AdminModule endpoints
     - `GET /admin/connector-health`, `GET /admin/runs`, `GET /admin/parser-failures`, `GET /admin/review-queue`; admin-guarded; access audited
     - _Requirements: 47.1, 47.2, 47.3, 48.1, 48.2, 48.3_
     - _Design: API §7 (admin routes)_
@@ -366,11 +366,11 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - _Requirements: 47.3, 48.3_
 
 - [ ] 14. Slice 10 — Privacy: export, delete, disconnect, retention surface
-  - [~] 14.1 Implement PrivacyModule endpoints
+  - [x] 14.1 Implement PrivacyModule endpoints
     - `POST /privacy/export` + `GET /privacy/export/{id}` (async + status), `POST /privacy/delete-data` (confirm-gated), `POST /connections/{id}/disconnect` (revoke OAuth, stop scheduling, keep opportunities), retention-policy surface
     - _Requirements: 49.1, 49.2, 49.3, 50.2, 51.1, 51.2, 51.3, 53.1, 56.1_
     - _Design: API §7 (privacy routes)_
-  - [~] 14.2 Implement export worker job
+  - [x] 14.2 Implement export worker job
     - Assemble the user's personal data, role profiles, saved/dismissed states, and connection configuration into an export; deliver via signed URL to the owner only
     - _Requirements: 49.1, 49.2_
   - [~] 14.3 Build privacy UI

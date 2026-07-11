@@ -1,0 +1,8 @@
+/**
+ * App-wide styles. All design tokens and Tailwind setup come from the shared
+ * design system so apps/web and packages/ui stay perfectly in sync.
+ */
+@import '@careerstack/ui/globals.css';
+
+/* Scan this app's own source for utility classes. */
+@source './';

@@ -74,7 +74,7 @@ export class Scheduler {
         await this.ctx.queues.connectorDiscovery.add(
           'discover',
           { connectionId: connection.id, correlationId: generateCorrelationId() },
-          { jobId: `discovery:${connection.id}:${bucket}` },
+          { jobId: `discovery:${connection.id}:${bucket}`.replace(/:/g, '_') },
         );
       }
       this.ctx.logger.info('scheduler.discovery_enqueued', {
@@ -96,7 +96,7 @@ export class Scheduler {
       this.ctx.queues.outboxDispatch.add(
         'dispatch',
         { correlationId: generateCorrelationId() },
-        { jobId: `outbox:${Math.floor(Date.now() / this.intervals.outboxMs)}` },
+        { jobId: `outbox:${Math.floor(Date.now() / this.intervals.outboxMs)}`.replace(/:/g, '_') },
       ),
     );
   }
@@ -106,7 +106,12 @@ export class Scheduler {
       this.ctx.queues.expiryCheck.add(
         'sweep',
         { correlationId: generateCorrelationId() },
-        { jobId: `expiry-sweep:${Math.floor(Date.now() / this.intervals.expiryMs)}` },
+        {
+          jobId: `expiry-sweep:${Math.floor(Date.now() / this.intervals.expiryMs)}`.replace(
+            /:/g,
+            '_',
+          ),
+        },
       ),
     );
   }
@@ -116,7 +121,12 @@ export class Scheduler {
       this.ctx.queues.retentionCleanup.add(
         'cleanup',
         { correlationId: generateCorrelationId() },
-        { jobId: `retention:${Math.floor(Date.now() / this.intervals.retentionMs)}` },
+        {
+          jobId: `retention:${Math.floor(Date.now() / this.intervals.retentionMs)}`.replace(
+            /:/g,
+            '_',
+          ),
+        },
       ),
     );
   }

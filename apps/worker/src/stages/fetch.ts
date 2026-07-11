@@ -194,7 +194,7 @@ export async function runFetch(
       isFirstParty: connector.isFirstParty,
       ...(data.ref.hints !== undefined ? { hints: data.ref.hints } : {}),
     },
-    { jobId: `parse:${rawArtifactId}` },
+    { jobId: `parse:${rawArtifactId}`.replace(/:/g, '_') },
   );
 
   ctx.logger.info('fetch.stored', {

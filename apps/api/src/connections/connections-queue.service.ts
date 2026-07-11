@@ -73,7 +73,7 @@ export class ConnectionsQueue implements OnModuleDestroy {
    */
   async enqueueDiscovery(data: DiscoveryJobData): Promise<void> {
     await this.getDiscoveryQueue().add('discover', data, {
-      ...(data.runId ? { jobId: `discover:${data.runId}` } : {}),
+      ...(data.runId ? { jobId: `discover:${data.runId}`.replace(/:/g, '_') } : {}),
       attempts: this.attempts,
       backoff: { type: 'exponential', delay: this.backoffBaseMs },
       removeOnComplete: { count: 1000 },
@@ -87,7 +87,7 @@ export class ConnectionsQueue implements OnModuleDestroy {
    */
   async enqueueFetch(data: FetchJobData): Promise<void> {
     await this.getFetchQueue().add('fetch', data, {
-      jobId: `fetch:${data.connectionId}:${data.ref.dedupKey}`,
+      jobId: `fetch:${data.connectionId}:${data.ref.dedupKey}`.replace(/:/g, '_'),
       attempts: this.attempts,
       backoff: { type: 'exponential', delay: this.backoffBaseMs },
       removeOnComplete: { count: 1000 },

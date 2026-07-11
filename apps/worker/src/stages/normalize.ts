@@ -61,7 +61,7 @@ export async function runNormalize(
       ...(candidate.postedAt !== undefined ? { postedAt: candidate.postedAt } : {}),
       ...(candidate.closureSignal !== undefined ? { closureSignal: candidate.closureSignal } : {}),
     },
-    { jobId: `dedup:${candidate.key}:${candidate.fingerprint}` },
+    { jobId: `dedup:${candidate.key}:${candidate.fingerprint}`.replace(/:/g, '_') },
   );
 
   ctx.logger.info('normalize.completed', {

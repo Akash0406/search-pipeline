@@ -72,7 +72,7 @@ export async function runDiscovery(
         sourceType: connection.sourceType,
         ref,
       },
-      { jobId: `fetch:${data.connectionId}:${ref.dedupKey}` },
+      { jobId: `fetch:${data.connectionId}:${ref.dedupKey}`.replace(/:/g, '_') },
     );
     discovered += 1;
   }

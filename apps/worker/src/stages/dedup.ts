@@ -419,7 +419,7 @@ export async function runDedup(
         closureSignal: data.closureSignal,
         rawArtifactId: data.rawArtifactId,
       },
-      { jobId: `expiry:${outcome.opportunityId}:${contentHash.slice(0, 12)}` },
+      { jobId: `expiry:${outcome.opportunityId}:${contentHash.slice(0, 12)}`.replace(/:/g, '_') },
     );
   }
 

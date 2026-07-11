@@ -156,7 +156,7 @@ export async function runParse(
       source: buildSourceMeta(data),
       parsed,
     },
-    { jobId: `normalize:${data.rawArtifactId}` },
+    { jobId: `normalize:${data.rawArtifactId}`.replace(/:/g, '_') },
   );
   return { routed: 'normalization' };
 }

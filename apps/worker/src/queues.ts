@@ -25,6 +25,7 @@ export const QUEUE_NAMES = {
   expiryCheck: 'expiry-check',
   retentionCleanup: 'retention-cleanup',
   outboxDispatch: 'outbox-dispatch',
+  dataExport: 'data-export',
 } as const;
 
 export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];
@@ -39,6 +40,7 @@ export const ALL_QUEUE_NAMES: readonly QueueName[] = [
   QUEUE_NAMES.expiryCheck,
   QUEUE_NAMES.retentionCleanup,
   QUEUE_NAMES.outboxDispatch,
+  QUEUE_NAMES.dataExport,
 ];
 
 /** Suffix appended to a queue name to form its dead-letter queue (Req 55/27.3). */
@@ -128,6 +130,17 @@ export interface OutboxDispatchJobData {
   batchSize?: number;
 }
 
+/**
+ * data-export: assemble one user's data export bundle and store it (Req 49).
+ * The job is keyed by `exportId` (see the producer) so retries / duplicate
+ * enqueues collapse onto one bundle — at-least-once + idempotent.
+ */
+export interface ExportJobData {
+  exportId: string;
+  userId: string;
+  correlationId: string;
+}
+
 /** Discriminated map of queue name → its job payload type. */
 export interface QueueJobDataMap {
   [QUEUE_NAMES.connectorDiscovery]: DiscoveryJobData;
@@ -138,4 +151,5 @@ export interface QueueJobDataMap {
   [QUEUE_NAMES.expiryCheck]: ExpiryCheckJobData;
   [QUEUE_NAMES.retentionCleanup]: RetentionCleanupJobData;
   [QUEUE_NAMES.outboxDispatch]: OutboxDispatchJobData;
+  [QUEUE_NAMES.dataExport]: ExportJobData;
 }

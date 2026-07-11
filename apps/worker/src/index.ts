@@ -27,6 +27,7 @@ export {
   type ExpiryCheckJobData,
   type RetentionCleanupJobData,
   type OutboxDispatchJobData,
+  type ExportJobData,
 } from './queues.js';
 
 // Context + wiring.
@@ -52,6 +53,7 @@ export {
   S3ArtifactStore,
   type ArtifactStore,
   type StoredArtifact,
+  type StoredExport,
 } from './storage/artifact-store.js';
 export { DbCheckpointStore } from './checkpoint-store.js';
 
@@ -64,6 +66,7 @@ export { runDedup } from './stages/dedup.js';
 export { runExpiryCheck } from './stages/expiry.js';
 export { runRetentionCleanup } from './stages/retention.js';
 export { runOutboxDispatch } from './stages/outbox.js';
+export { runExportJob } from './stages/export.js';
 
 // Run + content-change helpers.
 export {

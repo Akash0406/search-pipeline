@@ -20,6 +20,7 @@ import {
   type DeduplicationJobData,
   type DiscoveryJobData,
   type ExpiryCheckJobData,
+  type ExportJobData,
   type FetchJobData,
   type NormalizationJobData,
   type OutboxDispatchJobData,
@@ -37,6 +38,7 @@ export interface Queues {
   expiryCheck: Queue<ExpiryCheckJobData>;
   retentionCleanup: Queue<RetentionCleanupJobData>;
   outboxDispatch: Queue<OutboxDispatchJobData>;
+  dataExport: Queue<ExportJobData>;
 }
 
 /** Everything a stage handler needs at runtime. */
@@ -81,6 +83,7 @@ export function createQueues(connection: ConnectionOptions, config: Config): Que
     expiryCheck: make<ExpiryCheckJobData>(QUEUE_NAMES.expiryCheck),
     retentionCleanup: make<RetentionCleanupJobData>(QUEUE_NAMES.retentionCleanup),
     outboxDispatch: make<OutboxDispatchJobData>(QUEUE_NAMES.outboxDispatch),
+    dataExport: make<ExportJobData>(QUEUE_NAMES.dataExport),
   };
 }
 

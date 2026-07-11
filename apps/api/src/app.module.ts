@@ -3,7 +3,7 @@
  *
  * Composes the global {@link CoreModule} (config/db/logger/clock/crypto), the
  * feature modules for this slice ({@link AuthModule},
- * {@link RoleProfilesModule}, {@link OpportunitiesModule},
+ * {@link RoleProfilesModule}, {@link OpportunitiesModule}, {@link AdminModule},
  * {@link PrivacyModule}, {@link HealthModule}), and the global exception filter
  * that renders the standard error envelope.
  */
@@ -14,6 +14,7 @@ import { HttpExceptionFilter } from './common/http-exception.filter.js';
 import { AuthModule } from './auth/auth.module.js';
 import { RoleProfilesModule } from './role-profiles/role-profiles.module.js';
 import { OpportunitiesModule } from './opportunities/opportunities.module.js';
+import { AdminModule } from './admin/admin.module.js';
 import { PrivacyModule } from './privacy/privacy.module.js';
 import { HealthModule } from './health/health.module.js';
 
@@ -23,6 +24,7 @@ import { HealthModule } from './health/health.module.js';
     AuthModule,
     RoleProfilesModule,
     OpportunitiesModule,
+    AdminModule,
     PrivacyModule,
     HealthModule,
   ],

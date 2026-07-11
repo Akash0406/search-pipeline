@@ -25,6 +25,12 @@ export interface StoredArtifact {
   byteSize: number;
 }
 
+/** A stored export bundle's coordinates. */
+export interface StoredExport {
+  storageKey: string;
+  byteSize: number;
+}
+
 /** Port the pipeline depends on (kept narrow for testability). */
 export interface ArtifactStore {
   put(input: {
@@ -33,6 +39,16 @@ export interface ArtifactStore {
     body: Buffer;
     contentType?: string;
   }): Promise<StoredArtifact>;
+  /**
+   * Store a user data-export bundle (Req 49). The object is private; download
+   * access is only ever via a short-lived signed URL issued to the owner.
+   */
+  putExport(input: {
+    userId: string;
+    exportId: string;
+    body: Buffer;
+    contentType?: string;
+  }): Promise<StoredExport>;
   get(storageKey: string): Promise<Buffer>;
   delete(storageKey: string): Promise<void>;
   contentHash(body: Buffer): string;
@@ -50,6 +66,15 @@ function sha256Hex(body: Buffer): string {
 function buildStorageKey(connectionId: string, contentHash: string): string {
   const shard = contentHash.slice(0, 2);
   return `raw-artifacts/${connectionId}/${shard}/${contentHash}`;
+}
+
+/**
+ * Build a stable, per-export storage key. Keyed by `exportId` so re-running the
+ * export job overwrites the same object (idempotent, Req 49). The owner id is
+ * embedded so the object namespace stays owner-partitioned (defense in depth).
+ */
+function buildExportKey(userId: string, exportId: string): string {
+  return `exports/${userId}/${exportId}.json`;
 }
 
 /** Concatenate a web/Node stream body into a Buffer. */
@@ -107,6 +132,24 @@ export class S3ArtifactStore implements ArtifactStore {
       }),
     );
     return { storageKey, contentHash, byteSize: input.body.byteLength };
+  }
+
+  async putExport(input: {
+    userId: string;
+    exportId: string;
+    body: Buffer;
+    contentType?: string;
+  }): Promise<StoredExport> {
+    const storageKey = buildExportKey(input.userId, input.exportId);
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: storageKey,
+        Body: input.body,
+        ContentType: input.contentType ?? 'application/json',
+      }),
+    );
+    return { storageKey, byteSize: input.body.byteLength };
   }
 
   async get(storageKey: string): Promise<Buffer> {

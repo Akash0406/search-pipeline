@@ -16,6 +16,7 @@ import {
   type DeduplicationJobData,
   type DiscoveryJobData,
   type ExpiryCheckJobData,
+  type ExportJobData,
   type FetchJobData,
   type NormalizationJobData,
   type OutboxDispatchJobData,
@@ -31,6 +32,7 @@ import { runDedup } from './stages/dedup.js';
 import { runExpiryCheck } from './stages/expiry.js';
 import { runRetentionCleanup } from './stages/retention.js';
 import { runOutboxDispatch } from './stages/outbox.js';
+import { runExportJob } from './stages/export.js';
 
 /** Per-queue concurrency. Fetch stays modest — SafeFetcher rate-limits anyway. */
 const CONCURRENCY: Record<QueueName, number> = {
@@ -42,6 +44,7 @@ const CONCURRENCY: Record<QueueName, number> = {
   [QUEUE_NAMES.expiryCheck]: 1,
   [QUEUE_NAMES.retentionCleanup]: 1,
   [QUEUE_NAMES.outboxDispatch]: 1,
+  [QUEUE_NAMES.dataExport]: 2,
 };
 
 /** A running set of workers with a graceful close. */
@@ -115,6 +118,7 @@ export function startWorkers(
   register<OutboxDispatchJobData>(QUEUE_NAMES.outboxDispatch, (data) =>
     runOutboxDispatch(ctx, data),
   );
+  register<ExportJobData>(QUEUE_NAMES.dataExport, (data) => runExportJob(ctx, data));
 
   return {
     workers,

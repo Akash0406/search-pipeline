@@ -62,3 +62,15 @@ export const deleteDataResponseSchema = z.object({
   categories: z.array(deleteDataCategorySchema),
 });
 export type DeleteDataResponse = z.infer<typeof deleteDataResponseSchema>;
+
+/**
+ * `GET /privacy/retention` — surface the configurable raw-source retention
+ * policy (Req 53.1): the global default plus any per-user override and the
+ * resulting effective window (in days).
+ */
+export const retentionPolicyResponseSchema = z.object({
+  rawRetentionDays: z.number().int().positive(),
+  userOverrideDays: z.number().int().positive().nullable(),
+  effectiveDays: z.number().int().positive(),
+});
+export type RetentionPolicyResponse = z.infer<typeof retentionPolicyResponseSchema>;

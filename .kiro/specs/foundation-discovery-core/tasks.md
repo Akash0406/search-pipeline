@@ -336,7 +336,7 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - Full info + current status + sanitized description; contributing sources with evidence; first-party contributors marked; external links open session-isolated (`rel="noopener noreferrer" target="_blank"`); reserved region for future match/analysis
     - _Requirements: 45.1, 45.2, 45.3, 45.4, 45.5_
     - _Design: Frontend §8 (opportunity detail)_
-  - [~] 11.6 Implement status mapping + timezone date formatter
+  - [x] 11.6 Implement status mapping + timezone date formatter
     - Overlay per-user Saved/Dismissed on canonical status; render the fixed display vocabulary only; single tz-aware date formatter with exact value on demand
     - _Requirements: 46.1, 46.2, 46.3_
     - _Design: Canonical types §5, Frontend §8 (timezone/date handling)_
@@ -387,15 +387,15 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - _Properties: P23_
 
 - [ ] 15. Slice 11 — App shell, public surface, PWA, accessibility
-  - [~] 15.1 Build public landing + public routes
+  - [x] 15.1 Build public landing + public routes
     - Landing plus `/features /how-it-works /sources /security /privacy /terms` as RSC, responsive across mobile/tablet/desktop, sign-in CTA, brand name from `config.brandName` (default + warning when unset)
     - _Requirements: 1.2, 2.1, 2.2, 2.3, 2.4_
     - _Design: Frontend §8 (routes)_
-  - [~] 15.2 Build authenticated app shell
+  - [x] 15.2 Build authenticated app shell
     - Persistent sidebar (desktop) / bottom nav (mobile), command palette (keyboard + visible control), always-visible active-profile indicator, theme switcher (light/dark/system, persisted, no full reload)
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
     - _Design: Frontend §8 (app shell)_
-  - [~] 15.3 Implement PWA shell
+  - [x] 15.3 Implement PWA shell
     - Web app manifest + service worker offering an offline-fallback shell for the public surface
     - _Requirements: 2.5_
   - [~] 15.4 Implement SSE `/events` + client invalidation

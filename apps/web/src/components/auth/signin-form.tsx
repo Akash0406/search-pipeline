@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Mail } from 'lucide-react';
+import { Mail, ShieldCheck } from 'lucide-react';
 import type {
   GoogleOAuthStartResponse,
   MagicLinkRequestResponse,
@@ -19,6 +19,7 @@ import {
 } from '@careerstack/ui';
 import { apiFetch, ApiError } from '@/lib/api/client';
 
+/** Non-technical copy for each error code the API redirects back with (Req 4.3, 5.3). */
 const ERROR_MESSAGES: Record<string, string> = {
   sign_in_cancelled: 'Sign-in was cancelled. You can try again below.',
   sign_in_failed: 'We couldn’t complete sign-in. Please try again.',
@@ -48,7 +49,15 @@ function GoogleIcon({ className }: { className?: string }) {
   );
 }
 
-export function SignInForm({ returnTo, initialError }: { returnTo?: string; initialError?: string }) {
+export function SignInForm({
+  returnTo,
+  initialError,
+  offerResend = false,
+}: {
+  returnTo?: string;
+  initialError?: string;
+  offerResend?: boolean;
+}) {
   const [email, setEmail] = React.useState('');
   const [status, setStatus] = React.useState<'idle' | 'google' | 'magic' | 'sent'>('idle');
   const [error, setError] = React.useState<string | undefined>(
@@ -107,10 +116,13 @@ export function SignInForm({ returnTo, initialError }: { returnTo?: string; init
             link. It expires in a few minutes.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-3">
           <Button variant="outline" className="w-full" onClick={() => setStatus('idle')}>
             Use a different email
           </Button>
+          <p className="text-center text-xs text-muted-foreground">
+            Didn&apos;t get it? Check spam, or request another link.
+          </p>
         </CardContent>
       </Card>
     );
@@ -124,12 +136,17 @@ export function SignInForm({ returnTo, initialError }: { returnTo?: string; init
       </CardHeader>
       <CardContent className="space-y-4">
         {error ? (
-          <p
+          <div
             role="alert"
-            className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+            className="space-y-1 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
           >
-            {error}
-          </p>
+            <p>{error}</p>
+            {offerResend ? (
+              <p className="text-xs text-destructive/80">
+                Enter your email below and we&apos;ll send a fresh link.
+              </p>
+            ) : null}
+          </div>
         ) : null}
 
         <Button
@@ -149,7 +166,7 @@ export function SignInForm({ returnTo, initialError }: { returnTo?: string; init
           <Separator className="flex-1" />
         </div>
 
-        <form onSubmit={onMagicLink} className="space-y-3">
+        <form onSubmit={onMagicLink} className="space-y-3" noValidate>
           <div className="space-y-1.5">
             <Label htmlFor="email">Email address</Label>
             <Input
@@ -167,6 +184,15 @@ export function SignInForm({ returnTo, initialError }: { returnTo?: string; init
             {status === 'magic' ? 'Sending link…' : 'Email me a sign-in link'}
           </Button>
         </form>
+
+        {/* Privacy reassurance (Req 4.5 / SRC-009): we never touch job-platform passwords. */}
+        <p className="flex items-start gap-2 rounded-md bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden />
+          <span>
+            We never ask for your job-platform passwords. Sign-in uses Google or a one-time email
+            link only.
+          </span>
+        </p>
       </CardContent>
     </Card>
   );

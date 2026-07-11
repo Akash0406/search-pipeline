@@ -13,7 +13,9 @@ import {
   DropdownMenuTrigger,
   Skeleton,
   cn,
+  toast,
 } from '@careerstack/ui';
+import { ApiError } from '@/lib/api/client';
 import { useActivateRoleProfile, useMe, useRoleProfiles } from '@/lib/api/hooks';
 
 /**
@@ -85,7 +87,16 @@ export function ActiveProfileIndicator({ collapsed = false }: { collapsed?: bool
               disabled={activate.isPending}
               onSelect={(event) => {
                 event.preventDefault();
-                if (profile.id !== activeId) activate.mutate(profile.id);
+                if (profile.id === activeId) return;
+                activate.mutate(profile.id, {
+                  onSuccess: () => toast.success(`Switched to “${profile.name}”`),
+                  onError: (err) =>
+                    toast.error(
+                      err instanceof ApiError
+                        ? err.message
+                        : 'Couldn’t switch profiles. Please try again.',
+                    ),
+                });
               }}
             >
               <Check

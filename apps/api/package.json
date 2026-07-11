@@ -15,8 +15,8 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
-    "start": "node dist/main.js",
-    "dev": "node --watch dist/main.js",
+    "start": "node --env-file=../../.env dist/main.js",
+    "dev": "node --watch --env-file=../../.env dist/main.js",
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {

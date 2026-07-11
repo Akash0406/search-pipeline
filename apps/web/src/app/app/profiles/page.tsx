@@ -1,17 +1,18 @@
 import type { Metadata } from 'next';
-import { UserCircle } from 'lucide-react';
+import Link from 'next/link';
+import { Plus } from 'lucide-react';
 import { Button } from '@careerstack/ui';
 import { PageHeader } from '@/components/app/page-header';
-import { EmptyState } from '@/components/common/states';
+import { ProfileList } from '@/components/profiles/profile-list';
 
 export const metadata: Metadata = {
   title: 'Role profiles',
 };
 
 /**
- * Role-profiles placeholder. The create/edit editor and activation flows are
- * built in a later task (6.x); the active-profile switcher in the shell already
- * reads from the same API. This route provides an accessible empty state.
+ * Role-profiles surface (Req 10–19, Design §8 `/app/profiles`). The RSC shell
+ * renders the header + create action; the client `ProfileList` handles data,
+ * the required empty/loading/error states, and the lifecycle actions.
  */
 export default function ProfilesPage() {
   return (
@@ -19,13 +20,16 @@ export default function ProfilesPage() {
       <PageHeader
         title="Role profiles"
         description="Named sets of preferences — titles, skills, locations — that focus your discovery. One is active at a time."
+        actions={
+          <Button asChild>
+            <Link href="/app/profiles/new">
+              <Plus className="size-4" aria-hidden />
+              New profile
+            </Link>
+          </Button>
+        }
       />
-      <EmptyState
-        icon={UserCircle}
-        title="No role profiles yet"
-        description="Create your first role profile to tell us the roles you want. Your first profile becomes active automatically."
-        action={<Button disabled>Create a role profile (coming soon)</Button>}
-      />
+      <ProfileList />
     </>
   );
 }

@@ -49,6 +49,9 @@ const toSchemaInput = (env: Env) => ({
     brandName: present(env.BRAND_NAME),
     environment: present(env.NODE_ENV),
   },
+  cors: {
+    origins: present(env.CORS_ORIGINS),
+  },
   fetch: {
     maxBytes: present(env.FETCH_MAX_BYTES),
     timeoutMs: present(env.FETCH_TIMEOUT_MS),

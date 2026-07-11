@@ -27,6 +27,18 @@ export async function bootstrap(): Promise<NestFastifyApplication> {
 
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter);
 
+  // The web app runs on a different origin (e.g. :3001) than the API (:3000),
+  // so credentialed browser requests (cookies for auth) require an explicit
+  // CORS allow-list. Without this, the browser blocks every cross-origin call
+  // and both sign-in flows fail. Origins are configurable via CORS_ORIGINS.
+  app.enableCors({
+    origin: config.cors.origins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['content-type', 'x-csrf-token', 'idempotency-key', 'authorization'],
+    exposedHeaders: ['x-request-id'],
+  });
+
   // Echo the per-request id as `X-Request-Id` on EVERY response — successes,
   // errors, and 404s alike. This id equals the correlation id (see `genReqId`)
   // and the `requestId` in the standard error envelope, so clients can correlate

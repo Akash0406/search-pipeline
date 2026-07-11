@@ -60,6 +60,28 @@ export const appSchema = z.object({
   environment: z.enum(['development', 'test', 'production']).default('development'),
 });
 
+/** Default web origin allowed to call the API in local development. */
+export const DEFAULT_WEB_ORIGIN = 'http://localhost:3001' as const;
+
+/**
+ * CORS configuration. The web app runs on a different origin than the API
+ * (e.g. :3001 vs :3000), so credentialed browser requests require the API to
+ * allow that origin explicitly. `origins` is a comma/space-separated list from
+ * `CORS_ORIGINS`, falling back to the local web origin when unset.
+ */
+export const corsSchema = z.object({
+  origins: z
+    .string()
+    .optional()
+    .transform((raw) => {
+      const list = (raw ?? '')
+        .split(/[,\s]+/)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+      return list.length > 0 ? list : [DEFAULT_WEB_ORIGIN];
+    }),
+});
+
 /**
  * Safe-fetch bounds enforced by the SafeFetcher (Req 31.3, 31.4, 31.5).
  * `maxRedirects` (31.3), `maxBytes` (31.4), `timeoutMs` (31.5).
@@ -143,6 +165,7 @@ export const storageSchema = z.object({
 /** The full, validated configuration object. */
 export const configSchema = z.object({
   app: appSchema,
+  cors: corsSchema,
   fetch: fetchSchema,
   rateLimit: rateLimitSchema,
   retention: retentionSchema,
@@ -153,6 +176,7 @@ export const configSchema = z.object({
 });
 
 export type AppConfig = z.infer<typeof appSchema>;
+export type CorsConfig = z.infer<typeof corsSchema>;
 export type FetchConfig = z.infer<typeof fetchSchema>;
 export type RateLimitConfig = z.infer<typeof rateLimitSchema>;
 export type RetentionConfig = z.infer<typeof retentionSchema>;

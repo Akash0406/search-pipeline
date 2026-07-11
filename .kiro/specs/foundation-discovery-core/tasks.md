@@ -386,7 +386,7 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - _Requirements: 49.2, 54.3_
     - _Properties: P23_
 
-- [ ] 15. Slice 11 — App shell, public surface, PWA, accessibility
+- [x] 15. Slice 11 — App shell, public surface, PWA, accessibility
   - [x] 15.1 Build public landing + public routes
     - Landing plus `/features /how-it-works /sources /security /privacy /terms` as RSC, responsive across mobile/tablet/desktop, sign-in CTA, brand name from `config.brandName` (default + warning when unset)
     - _Requirements: 1.2, 2.1, 2.2, 2.3, 2.4_
@@ -406,15 +406,15 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - Keyboard navigation for command palette and navigation; accessible dialog roles/labels/focus management; reduced-motion honored; automated axe checks on key surfaces
     - _Requirements: 57.1, 57.2, 57.3, 57.4_
 
-- [ ] 16. Slice 12 — CI/CD and end-to-end wiring
-  - [~] 16.1 Wire the API application end-to-end
+- [x] 16. Slice 12 — CI/CD and end-to-end wiring
+  - [x] 16.1 Wire the API application end-to-end
     - Bootstrap `apps/api` with all modules and cross-cutting middleware: request-ID echo, trace correlation, session auth + CSRF, ownership guards, `Idempotency-Key` handling, cursor pagination, standard error envelope
     - _Requirements: 54.3_
     - _Design: API §7 (cross-cutting middleware)_
-  - [~] 16.2 Wire the web application end-to-end
+  - [x] 16.2 Wire the web application end-to-end
     - Connect `apps/web` to the API with session auth and SSE so the full flow works: land → register → create profile → connect source / add company → browse → filter/sort → save/dismiss → export → delete
     - _Requirements: 2.1, 3.4, 40.1, 43.1, 49.1_
-  - [~] 16.3 Add CI pipeline configuration
+  - [x] 16.3 Add CI pipeline configuration
     - Lint, typecheck, unit + property tests (fast-check ≥ 100 runs), contract/fixture tests, migration check, and build for all apps/packages
     - _Requirements: 20.1_
   - [ ]* 16.4 Write end-to-end (Playwright) test for the MVP flow
@@ -425,7 +425,7 @@ Test-related sub-tasks are marked with `*` and may be skipped for a faster MVP; 
     - _Requirements: 55.1, 55.2, 55.3_
     - _Properties: P27_
 
-- [~] 17. Final checkpoint — full slice wired end-to-end
+- [x] 17. Final checkpoint — full slice wired end-to-end
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
